@@ -1,47 +1,21 @@
-import { useState } from 'react'
-import {auth, googleProvider} from '../Config/firebase'
-import {createUserWithEmailAndPassword, signInWithPopup, signOut} from 'firebase/auth'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+import { UserAuth } from '../context/AuthContext'
+
 export default function Login() {
+    const navigate = useNavigate()
+    const {user, googleSignIn} = UserAuth()
 
- const [email, setEmail] = useState('')
- const [password, setPassword] = useState('')
-
- const signIn = async () => {
-    try {
-        await createUserWithEmailAndPassword(auth, email, password)
-    } catch (error) {
-        console.error(error)
-    }
-    
- }
-
- const signInWithGoogle = async () => {
-    try {
-        await signInWithPopup(auth, googleProvider)
-    } catch (error) {
-        console.error(error)
-    }
-    
- }
-
- const logOut = async () => {
-    try {
-        await signOut(auth)
-    } catch (error) {
-        console.error(error)
-    }
-    
- }
-
- console.log({auth})
+    useEffect(()=>{
+        if(user){
+            navigate('/')
+        }
+    },[user])
 
   return (
     <div>
-        <input type="text" placeholder='Email...' onChange={(e)=> setEmail(e.target.value)}/>
-        <input type="text" placeholder='Password...' onChange={(e)=> setPassword(e.target.value)}/>
-        <button onClick={signIn}>Sing in</button>
-        <button onClick={signInWithGoogle}>Sing in with google</button>
-        <button onClick={logOut}>Log Out</button>
+        <button onClick={googleSignIn}>Sing in with google</button>
     </div>
   )
 }
