@@ -5,6 +5,7 @@ import { signInWithPopup, signOut, onAuthStateChanged} from 'firebase/auth';
 interface User {
   email: string;
   displayName: string;
+  photoURL:string;
 }
 
   interface AuthContextProps {
