@@ -59,9 +59,9 @@ export default function Home() {
             {
               messages?.map((message: any) => {
                 return (
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2}}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap:1, m:1}}>
                     <Avatar alt="avatar" src={message.avatar} />
-                    <Box>
+                    <Box sx={{border:'1px solid grey', borderRadius:2, p:1}}>
                       <Typography variant="body1">{message.user}</Typography>
                       <Typography variant="body2">{message.text}</Typography>
                     </Box>
