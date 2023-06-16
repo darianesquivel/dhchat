@@ -21,7 +21,7 @@ export default function Login() {
             </Box>
             <Box sx={{ width: '50%', display:'flex', justifyContent:'center', alignItems:'center'}}>
                 <Button variant="contained" onClick={googleSignIn} endIcon={<GoogleIcon />}>
-                    Login whit Google
+                    Login with Google
                 </Button>
             </Box>
         </Box>

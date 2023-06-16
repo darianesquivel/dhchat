@@ -1,11 +1,10 @@
-import { Avatar, Box, Typography } from "@mui/material"
+import { Avatar, Box, Chip, Typography } from "@mui/material"
 import Navbar from "../components/Navbar"
 import { UserAuth } from "../context/AuthContext"
 import { useEffect, useState } from "react"
-import { addDoc, collection, serverTimestamp, query, onSnapshot, where, getDocs, orderBy } from 'firebase/firestore'
+import { addDoc, collection, serverTimestamp, query, onSnapshot, orderBy } from 'firebase/firestore'
 import { db } from "../api/Config/firebase"
-import Message from "../components/Message"
-
+import { grey } from "@mui/material/colors"
 
 export default function Home() {
   const { user } = UserAuth()
@@ -19,11 +18,13 @@ export default function Home() {
       if (newMessage === "") return;
 
       await addDoc(messagesRef, {
-        text: newMessage,
+        content: newMessage,
         createdAt: serverTimestamp(),
         user: user?.displayName,
-        avatar: user?.photoURL
+        avatar: user?.photoURL,
+        translatedContent: ''
       })
+
       setNewMessage("")
 
     } catch (error) {
@@ -54,16 +55,20 @@ export default function Home() {
         <Box sx={{ width: '10%', border: 'solid 1px black', borderRadius: 2, p: 2 }}>
         </Box>
         <Box sx={{ width: '90%', border: 'solid 1px black', borderRadius: 2, p: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', height: '90%', border: 'solid 1px black', borderRadius: 2, p: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', height: '90%', border: 'solid 1px black', borderRadius: 2, p: 2, overflow:'auto' }}>
 
             {
               messages?.map((message: any) => {
                 return (
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap:1, m:1}}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, m: 1 }}>
                     <Avatar alt="avatar" src={message.avatar} />
-                    <Box sx={{border:'1px solid grey', borderRadius:2, p:1}}>
-                      <Typography variant="body1">{message.user}</Typography>
-                      <Typography variant="body2">{message.text}</Typography>
+                    <Box sx={{ border: '1px solid grey', borderRadius: 2, p: 1 }}>
+                      <Typography variant="body2" >{message.user}</Typography>
+                      <Typography variant="caption">{message.content}</Typography>
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 1 }}>
+                        <Typography fontSize={10} color={'grey'} variant="caption"> <Chip color="success" size="small" label={'en'} />  {message.translatedContent?.en} </Typography>
+                        <Typography fontSize={10} color={'grey'} variant="caption"> <Chip color="success" size="small" label={'zh'} />  {message.translatedContent?.zh}</Typography>
+                      </Box>
                     </Box>
                   </Box>
                 )
