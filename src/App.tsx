@@ -1,4 +1,3 @@
-import './App.css';
 import CustomRoutes from './routes/routes';
 import { AuthContextProvider} from './context/AuthContext';
 

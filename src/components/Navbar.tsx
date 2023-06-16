@@ -7,16 +7,8 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
-
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function Navbar() {
     const { logOut, user } = UserAuth()
@@ -31,8 +23,7 @@ function Navbar() {
         setAnchorElUser(null);
     };
     return (
-        <AppBar>
-            <Box sx={{width:'100%', display:'flex', justifyContent:'flex-end'}} >
+            <Box sx={{width:'100%', display:'flex', height:'10vh', justifyContent:'flex-end', backgroundColor:'#A8CF45' }} >
                 <Toolbar>
                     <Box>
                         <IconButton onClick={handleOpenUserMenu}>
@@ -61,7 +52,6 @@ function Navbar() {
                     </Box>
                 </Toolbar>
             </Box>
-        </AppBar>
     );
 }
 export default Navbar;

@@ -1,6 +1,7 @@
 import { useContext, createContext, useEffect, useState, ReactNode } from 'react';
 import { auth, googleProvider } from '../api/Config/firebase';
 import { signInWithPopup, signOut, onAuthStateChanged} from 'firebase/auth';
+import Cookies from 'universal-cookie'
 
 interface User {
   email: string;
@@ -23,13 +24,16 @@ const AuthContext = createContext<AuthContextProps>({
 interface AuthContextProviderProps {
   children: ReactNode;
 }
+const cookies = new Cookies()
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
 
+
   const googleSignIn = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      cookies.set('auth-token', result.user.refreshToken)
     } catch (error) {
       console.error(error);
     }
@@ -38,6 +42,9 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const logOut = async () => {
     try {
       await signOut(auth);
+      console.log({cookies})
+      cookies.remove('auth-token')
+      
     } catch (error) {
       console.error(error);
     }
