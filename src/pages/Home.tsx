@@ -1,10 +1,12 @@
-import { Avatar, Box, Chip, Typography } from "@mui/material"
+import { Avatar, Box, Button, Chip, TextField, Typography } from "@mui/material"
 import Navbar from "../components/Navbar"
 import { UserAuth } from "../context/AuthContext"
 import { useEffect, useState } from "react"
 import { addDoc, collection, serverTimestamp, query, onSnapshot, orderBy } from 'firebase/firestore'
 import { db } from "../api/Config/firebase"
 import { grey } from "@mui/material/colors"
+import Message from "../components/Message"
+import Chat from "../components/Chat"
 
 export default function Home() {
   const { user } = UserAuth()
@@ -51,34 +53,30 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <Box sx={{ height: '90vh', display: 'flex', p: 2, gap: 1 }}>
-        <Box sx={{ width: '10%', border: 'solid 1px black', borderRadius: 2, p: 2 }}>
+      <Box sx={{ height: '92vh', display: 'flex', p: 2, gap: 1 }}>
+        <Box sx={{ width: '10%', border: 'solid 1px grey', borderRadius: 2, p: 2, display:'flex', flexDirection:'column', gap:0.5 }}>
+          <Chat/>
+          <Chat/>
+          <Chat/>
+          <Chat/>
+          <Chat/>
         </Box>
-        <Box sx={{ width: '90%', border: 'solid 1px black', borderRadius: 2, p: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', height: '90%', border: 'solid 1px black', borderRadius: 2, p: 2, overflow:'auto' }}>
+        <Box sx={{ width: '90%', border: 'solid 1px grey', borderRadius: 2, p: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', height: '90%', border: 'solid 1px grey', borderRadius: 2, p: 2, overflow:'auto' }}>
 
             {
-              messages?.map((message: any) => {
+              messages?.map((message: any, key) => {
+                const {content, avatar, user, translatedContent} = message
                 return (
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, m: 1 }}>
-                    <Avatar alt="avatar" src={message.avatar} />
-                    <Box sx={{ border: '1px solid grey', borderRadius: 2, p: 1 }}>
-                      <Typography variant="body2" >{message.user}</Typography>
-                      <Typography variant="caption">{message.content}</Typography>
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 1 }}>
-                        <Typography fontSize={10} color={'grey'} variant="caption"> <Chip color="success" size="small" label={'en'} />  {message.translatedContent?.en} </Typography>
-                        <Typography fontSize={10} color={'grey'} variant="caption"> <Chip color="success" size="small" label={'zh'} />  {message.translatedContent?.zh}</Typography>
-                      </Box>
-                    </Box>
-                  </Box>
+                  <Message key={key} content={content} avatar={avatar} name={user} translatedContent={translatedContent}/>
                 )
               })
             }
 
           </Box>
-          <Box sx={{ width: '100%' }} >
-            <input style={{ width: '90%' }} type="text" onChange={(e) => setNewMessage(e.target.value)} value={newMessage} />
-            <button style={{ width: '10%' }} onClick={handleSubmit}>Send</button>
+          <Box sx={{ width: '100%', display:'flex', gap:1 }} >
+            <TextField style={{ width: '90%' }} type="text" onChange={(e) => setNewMessage(e.target.value)} value={newMessage} />
+            <Button variant="outlined" color="success" style={{ width: '10%' }} onClick={handleSubmit}>Send</Button>
           </Box>
 
         </Box>
