@@ -25,15 +25,15 @@ export default function Message({ content, avatar, name, translatedContent, user
             <Avatar alt="avatar" src={avatar} />
             <Box sx={
                 user?.uid !== userId ?
-                    { border: '1px solid grey', borderRadius: 2, p: 1 }
-                    : { borderRadius: 2, p: 1, background: '#A8CF45' }
+                    { borderRadius: 2, p: .5 }
+                    : { borderRadius: 2, p: .5 }
             }>
-                <Typography variant="body2" >{name}</Typography>
-                <Typography variant="caption">{content}</Typography>
+                <Typography sx={{p:.3}} variant="body2" >{ user?.uid !== userId ? name : null}</Typography>
+                <Typography sx={ user?.uid !== userId ? {} : {background: '#f1f7e1', borderRadius:5, p:1}} variant="caption">{content}</Typography>
 
                 {
-                    user?.uid !== userId ? <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 1 }}>
-                        <Typography sx={{ display: 'flex', gap: 1 }} fontSize={10} color={'grey'} variant="caption">
+                    user?.uid !== userId ? <Box sx={{ display: 'flex', flexDirection: 'column', gap: .5, p: .5 }}>
+                        <Typography sx={{ display: 'flex', gap: 1, borderRadius:5, p:.5, alignItems:'center', background: '#f1f7e1'}} fontSize={10} color={'grey'} variant="caption">
                             <Chip color="success" size="small" label={'en'} />  {translatedContent?.en ? translatedContent.en : <Skeleton width={40} />}
                         </Typography>
                     </Box> : null
