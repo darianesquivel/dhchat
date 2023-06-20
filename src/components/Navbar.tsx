@@ -1,7 +1,6 @@
 import { UserAuth } from "../context/AuthContext"
 
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -22,8 +21,10 @@ function Navbar() {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    
     return (
-            <Box sx={{width:'100%', display:'flex', height:'10vh', justifyContent:'flex-end', backgroundColor:'#A8CF45' }} >
+            <Box sx={{width:'100%', display:'flex', height:'70px', justifyContent:'flex-end', backgroundColor:'#A8CF45' }} >
                 <Toolbar>
                     <Box>
                         <IconButton onClick={handleOpenUserMenu}>

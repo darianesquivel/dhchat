@@ -1,11 +1,11 @@
-import { Avatar, Box, Typography } from "@mui/material"
+import { Box, Button, TextField } from "@mui/material"
 import Navbar from "../components/Navbar"
 import { UserAuth } from "../context/AuthContext"
 import { useEffect, useState } from "react"
-import { addDoc, collection, serverTimestamp, query, onSnapshot, where, getDocs, orderBy } from 'firebase/firestore'
+import { addDoc, collection, serverTimestamp, query, onSnapshot, orderBy } from 'firebase/firestore'
 import { db } from "../api/Config/firebase"
 import Message from "../components/Message"
-
+import Chat from "../components/Chat"
 
 export default function Home() {
   const { user } = UserAuth()
@@ -13,35 +13,31 @@ export default function Home() {
   const [messages, setMessages] = useState([])
   const messagesRef = collection(db, 'messages')
 
-  const handleSubmit = async () => {
+  const handleSubmit =  () => {
     try {
-
       if (newMessage === "") return;
-
-      await addDoc(messagesRef, {
-        text: newMessage,
-        createdAt: serverTimestamp(),
-        user: user?.displayName,
-        avatar: user?.photoURL
+       addDoc(messagesRef, {
+        content: newMessage,
+        sendAt: serverTimestamp(),
+        sendBy: user?.uid,
+        avatar: user?.photoURL,
+        user: user?.displayName
       })
       setNewMessage("")
-
     } catch (error) {
       console.error(error)
     }
-
   }
 
   useEffect(() => {
 
-    const queryMessages = query(messagesRef, orderBy('createdAt'))
+    const queryMessages = query(messagesRef, orderBy('sendAt'))
 
     onSnapshot(queryMessages, (snapshot) => {
       let messages: any = []
       snapshot.forEach((doc) => {
         messages.push({ ...doc.data(), id: doc.id })
       })
-
       setMessages(messages)
     })
 
@@ -50,30 +46,34 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <Box sx={{ height: '90vh', display: 'flex', p: 2, gap: 1 }}>
-        <Box sx={{ width: '10%', border: 'solid 1px black', borderRadius: 2, p: 2 }}>
+      <Box sx={{ height: '92vh', display: 'flex', p: 2, gap: 1 }}>
+        <Box sx={{ width: '10%', border: 'solid 1px grey', borderRadius: 2, p: 2, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+          <Chat />
         </Box>
-        <Box sx={{ width: '90%', border: 'solid 1px black', borderRadius: 2, p: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', height: '90%', border: 'solid 1px black', borderRadius: 2, p: 2 }}>
+        <Box sx={{ width: '90%', border: 'solid 1px grey', borderRadius: 2, p: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', height: '90%', border: 'solid 1px grey', borderRadius: 2, p: 2, overflow: 'auto' }}>
 
             {
-              messages?.map((message: any) => {
+              messages?.map((message: any, key) => {
+                const { content, avatar, user, translatedContent, sendBy } = message
                 return (
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap:1, m:1}}>
-                    <Avatar alt="avatar" src={message.avatar} />
-                    <Box sx={{border:'1px solid grey', borderRadius:2, p:1}}>
-                      <Typography variant="body1">{message.user}</Typography>
-                      <Typography variant="body2">{message.text}</Typography>
-                    </Box>
-                  </Box>
+                  <Message
+                    key={key}
+                    content={content}
+                    avatar={avatar}
+                    name={user}
+                    translatedContent={translatedContent}
+                    userId={sendBy}
+                  />
+
                 )
               })
             }
 
           </Box>
-          <Box sx={{ width: '100%' }} >
-            <input style={{ width: '90%' }} type="text" onChange={(e) => setNewMessage(e.target.value)} value={newMessage} />
-            <button style={{ width: '10%' }} onClick={handleSubmit}>Send</button>
+          <Box sx={{ width: '100%', display: 'flex', gap: 1 }} >
+            <TextField style={{ width: '90%' }} type="text" onChange={(e) => setNewMessage(e.target.value)} value={newMessage} />
+            <Button variant="outlined" color="success" style={{ width: '10%' }} onClick={handleSubmit}>Send</Button>
           </Box>
 
         </Box>
