@@ -13,14 +13,14 @@ export default function Login() {
         if (user) {
             navigate('/')
         }
-    }, [user])
+    }, [navigate, user])
     return (
         <Box sx={{ display: 'flex', width:'100%', height:'100vh' }}>
             <Box sx={{ width: '50%' , display:'flex',justifyContent:'center', alignItems:'center', backgroundColor:'#A8CF45'}}>
                 <Typography color={'white'} variant='h3'>DH chat</Typography>
             </Box>
             <Box sx={{ width: '50%', display:'flex', justifyContent:'center', alignItems:'center'}}>
-                <Button variant="contained" onClick={googleSignIn} endIcon={<GoogleIcon />}>
+                <Button variant="contained" size='large' onClick={googleSignIn} endIcon={<GoogleIcon />}>
                     Login with Google
                 </Button>
             </Box>
