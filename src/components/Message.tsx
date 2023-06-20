@@ -4,7 +4,8 @@ import { UserAuth } from '../context/AuthContext';
 interface MessageProps {
     content: string,
     avatar: string,
-    name: string
+    name: string,
+    userId: string,
     translatedContent?: {
         en?: string;
         zh?: string;
@@ -12,19 +13,18 @@ interface MessageProps {
 }
 
 
-
-export default function Message({ content, avatar, name, translatedContent }: MessageProps) {
+export default function Message({ content, avatar, name, translatedContent, userId }: MessageProps) {
     const { user } = UserAuth()
-    console.log({ user })
+
     return (
         <Box sx={
-            user?.displayName !== name ?
+            user?.uid !== userId ?
                 { display: 'flex', alignItems: 'center', gap: 1, m: 1 }
                 : { display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', gap: 1, m: 1, justifyContent: 'flex-start' }
         }>
             <Avatar alt="avatar" src={avatar} />
             <Box sx={
-                user?.displayName !== name ?
+                user?.uid !== userId ?
                     { border: '1px solid grey', borderRadius: 2, p: 1 }
                     : { borderRadius: 2, p: 1, background: '#A8CF45' }
             }>
@@ -32,7 +32,7 @@ export default function Message({ content, avatar, name, translatedContent }: Me
                 <Typography variant="caption">{content}</Typography>
 
                 {
-                    user?.displayName !== name ? <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 1 }}>
+                    user?.uid !== userId ? <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 1 }}>
                         <Typography sx={{ display: 'flex', gap: 1 }} fontSize={10} color={'grey'} variant="caption">
                             <Chip color="success" size="small" label={'en'} />  {translatedContent?.en ? translatedContent.en : <Skeleton width={40} />}
                         </Typography>
