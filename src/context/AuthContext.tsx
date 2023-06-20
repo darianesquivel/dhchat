@@ -1,12 +1,13 @@
 import { useContext, createContext, useEffect, useState, ReactNode } from 'react';
-import { auth, googleProvider } from '../api/Config/firebase';
-import { signInWithPopup, signOut, onAuthStateChanged} from 'firebase/auth';
-import Cookies from 'universal-cookie'
+import { auth } from '../api/Config/firebase';
+import { onAuthStateChanged} from 'firebase/auth';
+import  {logOut, googleSignIn}  from '../api/functions/useFirebase';
 
 interface User {
   email: string;
   displayName: string;
   photoURL:string;
+  uid:string;
 }
 
   interface AuthContextProps {
@@ -24,33 +25,12 @@ const AuthContext = createContext<AuthContextProps>({
 interface AuthContextProviderProps {
   children: ReactNode;
 }
-const cookies = new Cookies()
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
 
-
-  const googleSignIn = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      cookies.set('auth-token', result.user.refreshToken)
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const logOut = async () => {
-    try {
-      await signOut(auth);
-      console.log({cookies})
-      cookies.remove('auth-token')
-      
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   useEffect(() => {
+
     const unsubscribe = onAuthStateChanged(auth, (currentUser:any) => {
       setUser(currentUser);
     });
@@ -58,6 +38,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     return () => {
       unsubscribe();
     };
+    
   }, []);
 
   return (
