@@ -2,6 +2,7 @@ import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom'
 import Home from '../pages/Home'
 import Login from '../pages/Login'
 import { UserAuth } from '../context/AuthContext'
+import CustomDrawer from '../pages/CustomDrawer'
 
 export default function CustomRoutes() {
     const {user} = UserAuth()
@@ -13,7 +14,7 @@ export default function CustomRoutes() {
   return (
     <BrowserRouter>
     <Routes>
-        <Route path='/' element={<RequireAuth><Home/></RequireAuth>}/>
+        <Route path='/' element={<RequireAuth><CustomDrawer/></RequireAuth>}/>
         <Route path='/login' element={<Login/>}/>
     </Routes>
     </BrowserRouter>

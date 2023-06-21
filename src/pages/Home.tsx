@@ -1,7 +1,7 @@
 import { Box, Button, TextField } from "@mui/material";
 import Navbar from "../components/Navbar";
 import { UserAuth } from "../context/AuthContext";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   addDoc,
   collection,
@@ -12,6 +12,9 @@ import {
 } from "firebase/firestore";
 import { db } from "../api/Config/firebase";
 import Message from "../components/Message";
+import SendIcon from '@mui/icons-material/Send';
+import bg_light from '../assets/images/bg_light.png'
+
 
 export default function Home() {
   const { user } = UserAuth();
@@ -36,7 +39,7 @@ export default function Home() {
     }
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const queryMessages = query(messagesRef, orderBy("sendAt"));
 
     const unsubscribe = onSnapshot(queryMessages, (snapshot) => {
@@ -50,7 +53,7 @@ export default function Home() {
     return () => unsubscribe();
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
@@ -69,29 +72,31 @@ export default function Home() {
 
   return (
     <>
-      <Navbar />
-      <Box sx={{ height: "92vh", display: "flex", p: 2, gap: 1 }}>
+      <Box sx={{ height: "90vh", display: "flex", p: 1, gap: 1, backgroundColor:"#f1f1f1"}}>
         <Box
           sx={{
             width: "10%",
-            border: "solid 1px grey",
             borderRadius: 2,
             p: 2,
             display: "flex",
             flexDirection: "column",
             gap: 0.5,
+            backgroundColor:'white'
           }}
         >
         </Box>
         <Box
           sx={{
             width: "90%",
-            border: "solid 1px grey",
             borderRadius: 2,
             p: 2,
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
+            // backgroundImage:`url(${bg_light})`,
+            backgroundSize: 'contain',
+            backgroundColor:'white'
+              
           }}
         >
           <Box
@@ -99,10 +104,10 @@ export default function Home() {
               display: "flex",
               flexDirection: "column",
               height: "90%",
-              border: "solid 1px grey",
               borderRadius: 2,
-              p: 2,
+              p: 1,
               overflow: "auto",
+              mb:1
             }}
           >
             {messages?.map((message: any, key) => {
@@ -126,9 +131,15 @@ export default function Home() {
             })}
             <div ref={messagesEndRef} /> 
           </Box>
-          <Box sx={{ width: "100%", display: "flex", gap: 1 }}>
+          <Box sx={{ width: "100%",display: "flex", gap: 1 }}>
             <TextField
-              style={{ width: "90%" }}
+              sx={{
+                backgroundColor:'white',
+                width:'90%',
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 10
+                },
+              }}
               minRows={3}
               placeholder="Type your message..."
               value={newMessage}
@@ -136,14 +147,29 @@ export default function Home() {
               onKeyDown={handleKeyDown}
             />
             <Button
-              variant="outlined"
+            sx={{borderRadius:10}}
+              variant="contained"
               color="success"
               style={{ width: "10%" }}
               onClick={handleSubmit}
+              endIcon={<SendIcon />}
+              size="small"
             >
               Send
             </Button>
           </Box>
+        </Box>
+        <Box
+          sx={{
+            width: "10%",
+            borderRadius: 2,
+            p: 2,
+            display: "flex",
+            flexDirection: "column",
+            gap: 0.5,
+            backgroundColor:'white'
+          }}
+        >
         </Box>
       </Box>
     </>

@@ -22,37 +22,37 @@ function Navbar() {
         setAnchorElUser(null);
     };
 
-    
+
     return (
-            <Box sx={{width:'100%', display:'flex', height:'70px', justifyContent:'flex-end', backgroundColor:'#A8CF45' }} >
-                <Toolbar>
-                    <Box>
-                        <IconButton onClick={handleOpenUserMenu}>
-                            <Avatar alt="Remy Sharp" src={user?.photoURL} />
-                        </IconButton>
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            <MenuItem onClick={logOut}>
-                                <Typography textAlign="center">Logout</Typography>
-                            </MenuItem>
-                        </Menu>
-                    </Box>
-                </Toolbar>
-            </Box>
+        <Box sx={{ width: '100%', display: 'flex', height: '70px', justifyContent: 'flex-end', backgroundColor: '#A8CF45' }} >
+            <Toolbar>
+                <Box>
+                    <IconButton onClick={handleOpenUserMenu}>
+                        <Avatar alt="Remy Sharp" src={user?.photoURL} />
+                    </IconButton>
+                    <Menu
+                        sx={{ mt: '45px' }}
+                        id="menu-appbar"
+                        anchorEl={anchorElUser}
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        keepMounted
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        open={Boolean(anchorElUser)}
+                        onClose={handleCloseUserMenu}
+                    >
+                        <MenuItem onClick={logOut}>
+                            <Typography textAlign="center">Logout</Typography>
+                        </MenuItem>
+                    </Menu>
+                </Box>
+            </Toolbar>
+        </Box>
     );
 }
 export default Navbar;
