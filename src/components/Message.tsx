@@ -31,11 +31,11 @@ export default function Message({ content, avatar, name, translatedContent, user
                     : { borderRadius: 2, p: .5 }
             }>
                 <Typography sx={{p:.3}} variant="body2" >{ user?.uid !== userId ? name : null}</Typography>
-                <Typography sx={ user?.uid !== userId ? {} : {background: '#f1f7e1', borderRadius:5, p:1}} variant="caption">{content}</Typography>
+                <Typography sx={ user?.uid !== userId ? {background: '#f1f1f1', borderRadius:5, p:1} : {background: '#f1f7e1', borderRadius:5, p:1}} variant="caption">{content}</Typography>
 
                 {
                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: .5, p: .5 }}>
-                        <Typography sx={{ display: 'flex', gap: 1, borderRadius:5, p:.5, alignItems:'center', background: '#f1f7e1'}} fontSize={10} color={'grey'} variant="caption">
+                        <Typography sx={ user?.uid !== userId ? { display: 'flex', gap: 1, borderRadius:5, p:.5, alignItems:'center', background: '#f1f7e1'} : { display: 'flex', gap: 1, borderRadius:5, p:.5, alignItems:'center', background: '#f1f1f1'}} fontSize={10} color={'grey'} variant="caption">
                             <Chip color="success" size="small" label={'en'} />  {translatedContent?.en ? translatedContent.en : <Skeleton width={40} />}
                         </Typography>
                     </Box>
