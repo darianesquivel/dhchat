@@ -1,4 +1,4 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import Navbar from "../components/Navbar";
 import { UserAuth } from "../context/AuthContext";
 import { useEffect, useRef, useState } from "react";
@@ -82,9 +82,11 @@ export default function Home() {
             display: "flex",
             flexDirection: "column",
             gap: 0.5,
-            backgroundColor:'white'
+            backgroundColor:'white',
+            alignItems: 'center',
           }}
-        ><img src={logo} width='100px' alt='DH chat' />
+        >
+        <img src={logo} width='95%' alt='DH chat'/>
         </Box>
         <Box
           sx={{
