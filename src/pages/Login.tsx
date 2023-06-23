@@ -17,6 +17,8 @@ export default function Login() {
             navigate('/')
         }
     }, [navigate, user])
+    
+
     return (
     <Box className={classes.boxBackgroundLogin}>
     <Box className={classes.boxLogoLogin}>
