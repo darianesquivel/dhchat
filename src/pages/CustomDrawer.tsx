@@ -197,7 +197,7 @@ export default function CustomDrawer() {
         </DrawerHeader>
         <Divider />
         <List>
-          {['Chat', 'Groups', 'Contacts'].map((text, index) => (
+          {['Chats', 'Groups', 'Contacts'].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 sx={{
