@@ -160,18 +160,6 @@ export default function Home() {
             </Button>
           </Box>
         </Box>
-        <Box
-          sx={{
-            width: "10%",
-            borderRadius: 2,
-            p: 2,
-            display: "flex",
-            flexDirection: "column",
-            gap: 0.5,
-            backgroundColor:'white'
-          }}
-        >
-        </Box>
       </Box>
     </>
   );
