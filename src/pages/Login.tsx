@@ -5,8 +5,6 @@ import { Box, Button, Typography } from '@mui/material'
 import logo from '../assets/images/logo.png';
 import bg_dark from '../assets/images/bg_dark.png';
 import bg_light from '../assets/images/bg_light.png';
-
-
 import GoogleIcon from '@mui/icons-material/Google';
 
 export default function Login() {
@@ -18,6 +16,8 @@ export default function Login() {
             navigate('/')
         }
     }, [navigate, user])
+    
+
     return (
         <Box sx={{ display: 'flex', height:'100vh', justifyContent:'center', alignItems: 'center',
         backgroundImage: `url(${bg_dark})`, backgroundRepeat: 'repeat' }}>
