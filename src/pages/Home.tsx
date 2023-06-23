@@ -14,6 +14,7 @@ import { db } from "../api/Config/firebase";
 import Message from "../components/Message";
 import SendIcon from '@mui/icons-material/Send';
 import bg_light from '../assets/images/bg_light.png'
+import logo from '../assets/images/logo.png';
 
 
 export default function Home() {
@@ -83,7 +84,7 @@ export default function Home() {
             gap: 0.5,
             backgroundColor:'white'
           }}
-        >
+        ><img src={logo} width='100px' alt='DH chat' />
         </Box>
         <Box
           sx={{
