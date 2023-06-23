@@ -17,8 +17,14 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
+
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import GroupsIcon from '@mui/icons-material/Groups';
+import ImportContactsIcon from '@mui/icons-material/ImportContacts';
+
+import Person2Icon from '@mui/icons-material/Person2';
+import SettingsIcon from '@mui/icons-material/Settings';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
 
 import Home from './Home';
 import Navbar from '../components/Navbar';
@@ -143,7 +149,7 @@ export default function CustomDrawer() {
             edge="start"
             sx={{
               marginRight: 5,
-              ...(open && { display: 'none' }),
+              ...(open && {visibility:'hidden' }),
             }}
           >
             <MenuIcon />
@@ -189,7 +195,7 @@ export default function CustomDrawer() {
         </DrawerHeader>
         <Divider />
         <List>
-          {['Chat', 'Groups', 'Contacts'].map((text, index) => (
+          {['Chats', 'Groups', 'Contacts'].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 sx={{
@@ -205,7 +211,9 @@ export default function CustomDrawer() {
                     justifyContent: 'center',
                   }}
                 >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  {index === 0 ? <QuestionAnswerIcon /> : ''}
+                  {index === 1 ? <GroupsIcon /> : ''}
+                  {index === 2 ? <ImportContactsIcon /> : ''}
                 </ListItemIcon>
                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
@@ -230,7 +238,9 @@ export default function CustomDrawer() {
                     justifyContent: 'center',
                   }}
                 >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  {index === 0 ? <Person2Icon /> : ''}
+                  {index === 1 ? <SettingsIcon /> : ''}
+                  {index === 2 ? <Brightness4Icon /> : ''}
                 </ListItemIcon>
                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
