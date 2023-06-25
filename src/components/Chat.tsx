@@ -19,6 +19,7 @@ export default function Chat({
     <CardActionArea
       onClick={() => onClick(id)}
       sx={{
+        maxHeight: "60px",
         p: 1,
         backgroundColor: "#A8CF45",
         display: "flex",
@@ -27,9 +28,11 @@ export default function Chat({
     >
       <Avatar src={avatar} />
       <Box sx={{ flexGrow: 1, ml: 1 }}>
-        <Typography variant="overline">{name}</Typography>
+        <Typography variant="overline" fontWeight={800}>
+          {name}
+        </Typography>
         <Typography variant="inherit">
-          {lastMessage ? lastMessage : null}{" "}
+          {lastMessage?.slice(0, 20) + "..."}
         </Typography>
       </Box>
     </CardActionArea>

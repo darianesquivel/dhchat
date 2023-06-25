@@ -27,7 +27,7 @@ export default function Home() {
   const conversationsRef = collection(db, "conversations");
   const [conversations, setConversations] = useState([]);
   const [conversationId, setConversationId] = useState("");
-
+  const [displayMessages, setDisplayMessages] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [messagesRef, setmessagesRef] = useState<CollectionReference | null>(
@@ -53,6 +53,7 @@ export default function Home() {
   }, [messages]);
 
   const handleClickConversation = (conversationId: any) => {
+    setDisplayMessages(true);
     const ref = collection(db, "conversations", conversationId, "messages");
     setmessagesRef(ref);
     setConversationId(conversationId);
@@ -135,7 +136,9 @@ export default function Home() {
             alignItems: "center",
           }}
         >
-          <Typography variant="button">Chats</Typography>
+          <Typography variant="button" fontWeight={600}>
+            Chats
+          </Typography>
           {conversations?.map((conversation: any, key) => {
             const { lastMessage, avatar, name, id } = conversation;
             return (
@@ -163,60 +166,77 @@ export default function Home() {
             backgroundColor: "white",
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              height: "90%",
-              borderRadius: 2,
-              p: 1,
-              overflow: "auto",
-              mb: 1,
-            }}
-          >
-            {messages?.map((message: any, key) => {
-              const { content, avatar, user, translatedContent, sendBy } =
-                message;
-              return (
-                <Message
-                  key={key}
-                  content={content.text}
-                  avatar={avatar}
-                  name={user}
-                  translatedContent={translatedContent?.text}
-                  userId={sendBy}
+          {displayMessages ? (
+            <>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "90%",
+                  borderRadius: 2,
+                  p: 1,
+                  overflow: "auto",
+                  mb: 1,
+                }}
+              >
+                {messages?.map((message: any, key) => {
+                  const { content, avatar, user, translatedContent, sendBy } =
+                    message;
+                  return (
+                    <Message
+                      key={key}
+                      content={content.text}
+                      avatar={avatar}
+                      name={user}
+                      translatedContent={translatedContent?.text}
+                      userId={sendBy}
+                    />
+                  );
+                })}
+                <div ref={messagesEndRef} />
+              </Box>
+
+              <Box sx={{ width: "100%", display: "flex", gap: 1 }}>
+                <TextField
+                  sx={{
+                    backgroundColor: "white",
+                    width: "90%",
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 10,
+                    },
+                  }}
+                  minRows={3}
+                  placeholder="Type your message..."
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyDown={handleKeyDown}
                 />
-              );
-            })}
-            <div ref={messagesEndRef} />
-          </Box>
-          <Box sx={{ width: "100%", display: "flex", gap: 1 }}>
-            <TextField
+                <Button
+                  sx={{ borderRadius: 10 }}
+                  variant="contained"
+                  color="success"
+                  style={{ width: "10%" }}
+                  onClick={handleSubmit}
+                  endIcon={<SendIcon />}
+                  size="small"
+                >
+                  Send
+                </Button>
+              </Box>
+            </>
+          ) : (
+            <Box
               sx={{
-                backgroundColor: "white",
-                width: "90%",
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: 10,
-                },
+                display: "flex",
+                justifyContent: "center",
               }}
-              minRows={3}
-              placeholder="Type your message..."
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyDown={handleKeyDown}
-            />
-            <Button
-              sx={{ borderRadius: 10 }}
-              variant="contained"
-              color="success"
-              style={{ width: "10%" }}
-              onClick={handleSubmit}
-              endIcon={<SendIcon />}
-              size="small"
             >
-              Send
-            </Button>
-          </Box>
+              <Typography variant="button" fontWeight={600}>
+                {" "}
+                Select a chat
+              </Typography>
+            </Box>
+          )}
         </Box>
       </Box>
     </>
