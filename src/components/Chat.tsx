@@ -2,6 +2,7 @@ import { Typography, CardActionArea, Avatar, Box } from "@mui/material";
 
 interface ConversationProps {
   lastMessage?: string;
+  lastMessageSendBy?: string;
   avatar?: string;
   name?: string;
   onClick: any;
@@ -10,6 +11,7 @@ interface ConversationProps {
 
 export default function Chat({
   lastMessage,
+  lastMessageSendBy,
   avatar,
   name,
   id,
@@ -19,7 +21,7 @@ export default function Chat({
     <CardActionArea
       onClick={() => onClick(id)}
       sx={{
-        maxHeight: "60px",
+        maxHeight: "70px",
         p: 1,
         backgroundColor: "#A8CF45",
         display: "flex",
@@ -31,7 +33,10 @@ export default function Chat({
         <Typography variant="overline" fontWeight={800}>
           {name}
         </Typography>
+
         <Typography variant="inherit">
+          {" "}
+          {lastMessageSendBy} :{" "}
           {lastMessage && lastMessage.length > 20
             ? lastMessage.slice(0, 20) + "..."
             : lastMessage}

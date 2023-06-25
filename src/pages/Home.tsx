@@ -108,6 +108,7 @@ export default function Home() {
 
         updateDoc(conversationRef, {
           lastMessage: newMessage,
+          lastMessageSendBy: user?.displayName,
         });
 
         setNewMessage("");
@@ -158,11 +159,13 @@ export default function Home() {
           </Typography>
 
           {conversations?.map((conversation: any, key) => {
-            const { lastMessage, avatar, name, id } = conversation;
+            const { lastMessage, avatar, name, id, lastMessageSendBy } =
+              conversation;
             return (
               <Chat
                 key={key}
                 lastMessage={lastMessage}
+                lastMessageSendBy={lastMessageSendBy}
                 avatar={avatar}
                 name={name}
                 id={id}
