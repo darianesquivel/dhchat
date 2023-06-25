@@ -1,5 +1,4 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
-import Navbar from "../components/Navbar";
+import { Avatar, Box, Button, TextField, Typography } from "@mui/material";
 import { UserAuth } from "../context/AuthContext";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -12,12 +11,12 @@ import {
   CollectionReference,
   updateDoc,
   doc,
+  getDoc,
 } from "firebase/firestore";
 import { db } from "../api/Config/firebase";
 import Message from "../components/Message";
 import SendIcon from "@mui/icons-material/Send";
 import bg_light from "../assets/images/bg_light.png";
-import logo from "../assets/images/logo.png";
 import Chat from "../components/Chat";
 
 export default function Home() {
@@ -26,6 +25,7 @@ export default function Home() {
   const [messages, setMessages] = useState([]);
   const conversationsRef = collection(db, "conversations");
   const [conversations, setConversations] = useState([]);
+  const [conversation, setConversation] = useState();
   const [conversationId, setConversationId] = useState("");
   const [displayMessages, setDisplayMessages] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -54,11 +54,28 @@ export default function Home() {
 
   const handleClickConversation = (conversationId: any) => {
     setDisplayMessages(true);
-    const ref = collection(db, "conversations", conversationId, "messages");
-    setmessagesRef(ref);
+    const conversationMessagesRef = collection(
+      db,
+      "conversations",
+      conversationId,
+      "messages"
+    );
+    const conversationRef = doc(db, "conversations", conversationId);
+    setmessagesRef(conversationMessagesRef);
     setConversationId(conversationId);
 
-    const queryMessages = query(ref, orderBy("sendAt"));
+    const queryMessages = query(conversationMessagesRef, orderBy("sendAt"));
+
+    getDoc(conversationRef)
+      .then((docSnapshot) => {
+        if (docSnapshot.exists()) {
+          const data: any = docSnapshot.data();
+          setConversation(data);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 
     onSnapshot(queryMessages, (snapshot) => {
       let messages: any = [];
@@ -139,6 +156,7 @@ export default function Home() {
           <Typography variant="button" fontWeight={600}>
             Chats
           </Typography>
+
           {conversations?.map((conversation: any, key) => {
             const { lastMessage, avatar, name, id } = conversation;
             return (
@@ -157,7 +175,6 @@ export default function Home() {
           sx={{
             width: "85%",
             borderRadius: 2,
-            p: 2,
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
@@ -168,6 +185,20 @@ export default function Home() {
         >
           {displayMessages ? (
             <>
+              <Box
+                sx={{
+                  backgroundColor: "#A8CF45",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 2,
+                  p: 1,
+                }}
+              >
+                <Avatar src={(conversation as any)?.avatar} />
+                <Typography variant="overline" fontWeight={800}>
+                  {(conversation as any)?.name}
+                </Typography>
+              </Box>
               <Box
                 sx={{
                   display: "flex",
@@ -196,7 +227,7 @@ export default function Home() {
                 <div ref={messagesEndRef} />
               </Box>
 
-              <Box sx={{ width: "100%", display: "flex", gap: 1 }}>
+              <Box sx={{ width: "100%", display: "flex", gap: 1, p: 1 }}>
                 <TextField
                   sx={{
                     backgroundColor: "white",

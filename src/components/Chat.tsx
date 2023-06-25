@@ -32,7 +32,9 @@ export default function Chat({
           {name}
         </Typography>
         <Typography variant="inherit">
-          {lastMessage?.slice(0, 20) + "..."}
+          {lastMessage && lastMessage.length > 20
+            ? lastMessage.slice(0, 20) + "..."
+            : lastMessage}
         </Typography>
       </Box>
     </CardActionArea>
