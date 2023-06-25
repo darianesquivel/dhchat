@@ -21,7 +21,8 @@ export default function Chat({
     <CardActionArea
       onClick={() => onClick(id)}
       sx={{
-        maxHeight: "70px",
+        height: "70px",
+        minWidth: "200px",
         p: 1,
         backgroundColor: "#A8CF45",
         display: "flex",
@@ -34,13 +35,15 @@ export default function Chat({
           {name}
         </Typography>
 
-        <Typography variant="inherit">
-          {" "}
-          {lastMessageSendBy} :{" "}
-          {lastMessage && lastMessage.length > 20
-            ? lastMessage.slice(0, 20) + "..."
-            : lastMessage}
-        </Typography>
+        {lastMessage ? (
+          <Typography variant="inherit">
+            {" "}
+            {lastMessageSendBy?.slice(0, lastMessageSendBy.indexOf(" "))} :{" "}
+            {lastMessage.length > 20
+              ? lastMessage.slice(0, 20) + "..."
+              : lastMessage}
+          </Typography>
+        ) : null}
       </Box>
     </CardActionArea>
   );

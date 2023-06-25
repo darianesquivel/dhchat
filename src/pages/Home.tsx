@@ -145,6 +145,8 @@ export default function Home() {
         <Box
           sx={{
             width: "15%",
+            minWidth: "220px",
+
             borderRadius: 2,
             p: 2,
             display: "flex",
@@ -195,6 +197,7 @@ export default function Home() {
                   alignItems: "center",
                   gap: 2,
                   p: 1,
+                  borderStartEndRadius: 10,
                 }}
               >
                 <Avatar src={(conversation as any)?.avatar} />
@@ -230,15 +233,26 @@ export default function Home() {
                 <div ref={messagesEndRef} />
               </Box>
 
-              <Box sx={{ width: "100%", display: "flex", gap: 1, p: 1 }}>
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  gap: 1,
+                  p: 1,
+                  backgroundColor: "#A8CF45",
+                  borderEndEndRadius: 10,
+                }}
+              >
                 <TextField
                   sx={{
                     backgroundColor: "white",
+                    borderRadius: 10,
                     width: "90%",
                     "& .MuiOutlinedInput-root": {
                       borderRadius: 10,
                     },
                   }}
+                  size="small"
                   minRows={3}
                   placeholder="Type your message..."
                   value={newMessage}
