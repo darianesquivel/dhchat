@@ -35,13 +35,16 @@ export default function Home() {
   );
 
   useEffect(() => {
-    const getConversations = onSnapshot(conversationsRef, (snapshot) => {
-      let conversations: any = [];
-      snapshot.forEach((doc) => {
-        conversations.push({ ...doc.data(), id: doc.id });
-      });
-      setConversations(conversations);
-    });
+    const getConversations = onSnapshot(
+      query(conversationsRef, orderBy("createAt", "desc")),
+      (snapshot) => {
+        let conversations: any = [];
+        snapshot.forEach((doc) => {
+          conversations.push({ ...doc.data(), id: doc.id });
+        });
+        setConversations(conversations);
+      }
+    );
 
     return () => {
       getConversations();

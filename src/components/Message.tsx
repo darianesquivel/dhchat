@@ -29,8 +29,8 @@ export default function Message({
               display: "flex",
               flexDirection: "row-reverse",
               alignItems: "flex-start",
-              gap: 1,
-              m: 1,
+              gap: 0.5,
+              m: 0.5,
               justifyContent: "flex-start",
             }
       }
@@ -38,25 +38,9 @@ export default function Message({
       <Box>
         <Avatar alt="avatar" src={avatar} />
       </Box>
-      <Box
-        sx={
-          user?.uid !== userId
-            ? { borderRadius: 2, p: 0.5 }
-            : { borderRadius: 2, p: 0.5 }
-        }
-      >
-        <Typography sx={{ p: 0.3 }} variant="body2">
+      <Box sx={{ p: 0.5 }}>
+        <Typography sx={{ p: 0.3 }} fontWeight={600} variant="body2">
           {user?.uid !== userId ? name : null}
-        </Typography>
-        <Typography
-          sx={
-            user?.uid !== userId
-              ? { background: "#f1f1f1", borderRadius: 5, p: 1 }
-              : { background: "#f1f7e1", borderRadius: 5, p: 1 }
-          }
-          variant="caption"
-        >
-          {content}
         </Typography>
 
         {user?.uid !== userId ? (
