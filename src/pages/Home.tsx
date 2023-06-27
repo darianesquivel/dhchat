@@ -18,6 +18,7 @@ import Message from "../components/Message";
 import SendIcon from "@mui/icons-material/Send";
 import bg_light from "../assets/images/bg_light.png";
 import Chat from "../components/Chat";
+import CustomSelected from "../components/CustomSelect";
 
 export default function Home() {
   const { user } = UserAuth();
@@ -28,6 +29,7 @@ export default function Home() {
   const [conversation, setConversation] = useState();
   const [conversationId, setConversationId] = useState("");
   const [displayMessages, setDisplayMessages] = useState(false);
+  const [lenguage, setLenguage] = useState("fr");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [messagesRef, setmessagesRef] = useState<CollectionReference | null>(
@@ -198,15 +200,21 @@ export default function Home() {
                   backgroundColor: "#A8CF45",
                   display: "flex",
                   alignItems: "center",
-                  gap: 2,
+                  justifyContent: "space-between",
+                  // gap: 2,
                   p: 1,
-                  borderStartEndRadius: 10,
+                  // borderStartEndRadius: 10,
                 }}
               >
-                <Avatar src={(conversation as any)?.avatar} />
-                <Typography variant="overline" fontWeight={800}>
-                  {(conversation as any)?.name}
-                </Typography>
+                <Box sx={{ display: "flex", gap: 2, p: 1 }}>
+                  <Avatar src={(conversation as any)?.avatar} />
+                  <Typography variant="overline" fontWeight={800}>
+                    {(conversation as any)?.name}
+                  </Typography>
+                </Box>
+
+                {/* selected de idiomas  */}
+                <CustomSelected setLenguage={setLenguage} />
               </Box>
               <Box
                 sx={{
@@ -230,6 +238,7 @@ export default function Home() {
                       name={user}
                       translatedContent={translatedContent?.text}
                       userId={sendBy}
+                      lenguage={lenguage}
                     />
                   );
                 })}

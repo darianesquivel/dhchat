@@ -6,9 +6,12 @@ interface MessageProps {
   avatar: string;
   name: string;
   userId: string;
+  lenguage: string;
   translatedContent?: {
+    de?: string;
     en?: string;
-    zh?: string;
+    es?: string;
+    fr?: string;
   };
 }
 
@@ -18,6 +21,7 @@ export default function Message({
   name,
   translatedContent,
   userId,
+  lenguage,
 }: MessageProps) {
   const { user } = UserAuth();
   return (
@@ -35,10 +39,10 @@ export default function Message({
             }
       }
     >
-       <Box>
+      <Box>
         <Avatar alt="avatar" src={avatar} />
-       </Box>
-      
+      </Box>
+
       <Box sx={{ p: 0.5 }}>
         <Typography sx={{ p: 0.3 }} fontWeight={600} variant="body2">
           {user?.uid !== userId ? name : null}
@@ -59,9 +63,11 @@ export default function Message({
               }}
               variant="caption"
             >
-              <Chip color="success" size="small" label={"en"} />
-              {translatedContent?.en ? (
-                translatedContent.en
+              <Chip color="success" size="small" label={lenguage} />
+              {translatedContent?.[
+                lenguage as keyof typeof translatedContent
+              ] ? (
+                translatedContent[lenguage as keyof typeof translatedContent]
               ) : (
                 <Skeleton width={40} />
               )}
@@ -69,18 +75,26 @@ export default function Message({
           </Box>
         ) : null}
 
-        <Box sx={{ py:.5, px: 2, ml:2 ,background:'#f1f1f1', borderRadius:10 , display:'inline-block'}} >
-        
-        <Typography variant="body2" fontSize={8} align="inherit" color={'grey'}>
-          { user?.uid !== userId ? 'original' : 'me'}
-        </Typography>
-        <Typography variant="caption"> {content}</Typography>
-         
-          
+        <Box
+          sx={{
+            py: 0.5,
+            px: 2,
+            ml: 2,
+            background: "#f1f1f1",
+            borderRadius: 10,
+            display: "inline-block",
+          }}
+        >
+          <Typography
+            variant="body2"
+            fontSize={8}
+            align="inherit"
+            color={"grey"}
+          >
+            {user?.uid !== userId ? "original" : "me"}
+          </Typography>
+          <Typography variant="caption"> {content}</Typography>
         </Box>
-        
-        
-        
       </Box>
     </Box>
   );
