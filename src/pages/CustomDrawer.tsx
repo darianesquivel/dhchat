@@ -12,32 +12,24 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import GroupsIcon from '@mui/icons-material/Groups';
 import ImportContactsIcon from '@mui/icons-material/ImportContacts';
-
 import Person2Icon from '@mui/icons-material/Person2';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
-
 import Home from './Home';
-import Navbar from '../components/Navbar';
-
-
-///////////
-
+import { TransitionProps } from '@mui/material/transitions';
 import { UserAuth } from "../context/AuthContext"
-
-
 import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
 import MenuItem from '@mui/material/MenuItem';
+import { Dialog, Slide } from '@mui/material';
+import Profile from './Profile';
 
 const drawerWidth = 240;
 
@@ -74,6 +66,15 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
 }
+
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement;
+  },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -112,6 +113,11 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function CustomDrawer() {
 
+  const [openProfile, setOpenProfie] = React.useState(false);
+
+
+
+  
   const { logOut, user } = UserAuth()
 
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -137,6 +143,14 @@ export default function CustomDrawer() {
     setOpen(false);
   };
 
+  const handleOpenProfile = () => {
+    setOpenProfie(true);
+  };
+
+  const handleCloseProfile = () => {
+    setOpenProfie(false);
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -154,9 +168,6 @@ export default function CustomDrawer() {
           >
             <MenuIcon />
           </IconButton>
-          {/* <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
-          </Typography> */}
           <Box>
             {user?.displayName}
             <IconButton onClick={handleOpenUserMenu}
@@ -246,11 +257,41 @@ export default function CustomDrawer() {
               </ListItemButton>
             </ListItem>
           ))}
+          <ListItem key={'Profile'} disablePadding sx={{ display: 'block' }}>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }}
+                onClick={handleOpenProfile}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Person2Icon /> 
+                 
+                </ListItemIcon>
+                <ListItemText primary={'Profile'} sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 1, backgroundColor: "#f1f1f1" }}>
         <DrawerHeader />
         <Home />
+        <Dialog
+        fullScreen
+        open={openProfile}
+        onClose={handleCloseProfile}
+        TransitionComponent={Transition}
+      >
+          <Profile onClose={handleCloseProfile}/>
+        </Dialog>
       </Box>
     </Box>
   );
