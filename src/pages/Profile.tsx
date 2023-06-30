@@ -13,7 +13,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import { UserAuth } from '../context/AuthContext';
 import { Avatar, Box } from '@mui/material';
 
-
 export default function Profile({onClose}:any) {
 
   const { user } = UserAuth()
