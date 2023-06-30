@@ -17,6 +17,7 @@ import { db } from "../api/Config/firebase";
 import Message from "../components/Message";
 import SendIcon from "@mui/icons-material/Send";
 import bg_light from "../assets/images/bg_light.png";
+import logo from '../assets/images/logo.png'
 import Chat from "../components/Chat";
 import CustomSelected from "../components/CustomSelect";
 
@@ -161,7 +162,9 @@ export default function Home() {
             alignItems: "center",
           }}
         >
-          <Typography variant="button" fontWeight={600}>
+            <img width="100px" src={logo} alt="logo" />
+
+          <Typography variant="button" fontWeight={600} pt={3}>
             Chats
           </Typography>
 
