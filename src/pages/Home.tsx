@@ -188,7 +188,7 @@ export default function Home() {
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
-            backgroundImage: `url(${bg_light})`,
+            backgroundImage: displayMessages ? `url(${bg_light})` : '',
             backgroundSize: "contain",
             backgroundColor: "white",
           }}
