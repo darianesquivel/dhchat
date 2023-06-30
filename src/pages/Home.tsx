@@ -29,7 +29,7 @@ export default function Home() {
   const [conversation, setConversation] = useState();
   const [conversationId, setConversationId] = useState("");
   const [displayMessages, setDisplayMessages] = useState(false);
-  const [lenguage, setLenguage] = useState("fr");
+  const [lenguage, setLenguage] = useState("en");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [messagesRef, setmessagesRef] = useState<CollectionReference | null>(
@@ -201,9 +201,7 @@ export default function Home() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  // gap: 2,
                   p: 1,
-                  // borderStartEndRadius: 10,
                 }}
               >
                 <Box sx={{ display: "flex", gap: 2, p: 1 }}>
@@ -213,7 +211,6 @@ export default function Home() {
                   </Typography>
                 </Box>
 
-                {/* selected de idiomas  */}
                 <CustomSelected setLenguage={setLenguage} />
               </Box>
               <Box

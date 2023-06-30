@@ -25,10 +25,18 @@ export default function CustomSelected({ setLenguage }: any) {
           inputProps={{ "aria-label": "Translate to" }}
           size="small"
         >
-          <MenuItem value={"de"}>de</MenuItem>
-          <MenuItem value={"en"}>en</MenuItem>
-          <MenuItem value={"es"}>es</MenuItem>
-          <MenuItem value={"fr"}>fr</MenuItem>
+          <MenuItem value={"ar"}>Arab</MenuItem>
+          <MenuItem value={"de"}>Deutsch</MenuItem>
+          <MenuItem value={"es"}>Spanish</MenuItem>
+          <MenuItem value={"en"}>English</MenuItem>
+          <MenuItem value={"fr"}>French</MenuItem>
+          <MenuItem value={"hi"}>Hindi</MenuItem>
+          <MenuItem value={"it"}>Italian</MenuItem>
+          <MenuItem value={"ja"}>Japanese</MenuItem>
+          <MenuItem value={"pl"}>Polish</MenuItem>
+          <MenuItem value={"pt"}>Portuguese</MenuItem>
+          <MenuItem value={"ru"}>Russian</MenuItem>
+          <MenuItem value={"zh"}>Chinese</MenuItem>
         </Select>
       </FormControl>
     </Box>
