@@ -47,7 +47,7 @@ export default function Profile({onClose}:any) {
           </ListItem>
           <Divider />
           <ListItem>
-            <ListItemText primary="Nombre" secondary={user?.displayName}  />
+            <ListItemText primary="Name" secondary={user?.displayName}  />
           </ListItem>
           <ListItem>
             <ListItemText primary="Email" secondary={user?.email}  />
