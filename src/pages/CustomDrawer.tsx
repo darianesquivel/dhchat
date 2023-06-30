@@ -204,7 +204,7 @@ export default function CustomDrawer() {
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>
-        {/* <Divider />
+        <Divider />
         <List>
           {['Chats', 'Groups', 'Contacts'].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
@@ -231,9 +231,9 @@ export default function CustomDrawer() {
             </ListItem>
           ))}
         </List>
-        <Divider /> */}
+        <Divider />
         <List>
-          {/* {['Profile', 'Configuration', 'Dark mode'].map((text, index) => (
+          {['Configuration', 'Dark mode'].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 sx={{
@@ -249,14 +249,14 @@ export default function CustomDrawer() {
                     justifyContent: 'center',
                   }}
                 >
-                  {index === 0 ? <Person2Icon /> : ''}
-                  {index === 1 ? <SettingsIcon /> : ''}
-                  {index === 2 ? <Brightness4Icon /> : ''}
+                  {/* {index === 0 ? <Person2Icon /> : ''} */}
+                  {index === 0 ? <SettingsIcon /> : ''}
+                  {index === 1 ? <Brightness4Icon /> : ''}
                 </ListItemIcon>
                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
-          ))} */}
+          ))}
           <ListItem key={'Profile'} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 sx={{
