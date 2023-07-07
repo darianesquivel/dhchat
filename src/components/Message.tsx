@@ -65,6 +65,27 @@ export default function Message({
           {user?.uid !== userId ? name : null}
         </Typography>
 
+        <Box
+          sx={{
+            py: 0.5,
+            px: 2,
+            ml: 2,
+            background: "#f1f1f1",
+            borderRadius: 10,
+            display: "inline-block",
+          }}
+        >
+          <Typography
+            variant="body2"
+            fontSize={10}
+            align="inherit"
+            color={"grey"}
+          >
+            {user?.uid !== userId ? `original - ${formattedDate}` : `me - ${formattedDate}`}
+          </Typography>
+          <Typography variant="caption" sx={{ fontSize: "14px"}}> {content} </Typography>
+        </Box>
+
         {/* {user?.uid !== userId ? ( */}
           <Box
             sx={{ display: "flex", flexDirection: "column", gap: 0.5, p: 0.5 }}
@@ -93,26 +114,6 @@ export default function Message({
           </Box>
         {/* ) : null} */}
 
-        <Box
-          sx={{
-            py: 0.5,
-            px: 2,
-            ml: 2,
-            background: "#f1f1f1",
-            borderRadius: 10,
-            display: "inline-block",
-          }}
-        >
-          <Typography
-            variant="body2"
-            fontSize={10}
-            align="inherit"
-            color={"grey"}
-          >
-            {user?.uid !== userId ? `original - ${formattedDate}` : `me - ${formattedDate}`}
-          </Typography>
-          <Typography variant="caption" sx={{ fontSize: "14px"}}> {content} </Typography>
-        </Box>
       </Box>
     </Box>
   );
