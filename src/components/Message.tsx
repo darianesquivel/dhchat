@@ -8,9 +8,9 @@ interface MessageProps {
   name: string;
   userId: string;
   lenguage: string;
-  sendAt: {
-    seconds: number;
-    nanoseconds: number;
+  sendAt?: {
+    seconds?: number;
+    nanoseconds?: number;
   };
   translatedContent?: {
     ar?: string;
@@ -35,10 +35,10 @@ export default function Message({
   translatedContent,
   userId,
   lenguage,
-  sendAt
+  sendAt,
 }: MessageProps) {
   const { user } = UserAuth();
-  const timestampInMilliseconds = sendAt.seconds * 1000 + sendAt.nanoseconds / 1000000;
+  const timestampInMilliseconds = (sendAt?.seconds && sendAt?.nanoseconds) ? sendAt.seconds * 1000 + sendAt.nanoseconds / 1000000 : 0;
   const formattedDate = moment(timestampInMilliseconds).format('DD/MM/YYYY HH:mm');
 
   return (
@@ -64,27 +64,6 @@ export default function Message({
         <Typography sx={{ p: 0.3 }} fontWeight={600} variant="body2">
           {user?.uid !== userId ? name : null}
         </Typography>
-
-        <Box
-          sx={{
-            py: 0.5,
-            px: 2,
-            ml: 2,
-            background: "#f1f1f1",
-            borderRadius: 10,
-            display: "inline-block",
-          }}
-        >
-          <Typography
-            variant="body2"
-            fontSize={10}
-            align="inherit"
-            color={"grey"}
-          >
-            {user?.uid !== userId ? `original - ${formattedDate}` : `me - ${formattedDate}`}
-          </Typography>
-          <Typography variant="caption" sx={{ fontSize: "14px"}}> {content} </Typography>
-        </Box>
 
         {/* {user?.uid !== userId ? ( */}
           <Box
@@ -114,7 +93,26 @@ export default function Message({
           </Box>
         {/* ) : null} */}
 
-
+        <Box
+          sx={{
+            py: 0.5,
+            px: 2,
+            ml: 2,
+            background: "#f1f1f1",
+            borderRadius: 10,
+            display: "inline-block",
+          }}
+        >
+          <Typography
+            variant="body2"
+            fontSize={10}
+            align="inherit"
+            color={"grey"}
+          >
+            {user?.uid !== userId ? `original - ${formattedDate}` : `me - ${formattedDate}`}
+          </Typography>
+          <Typography variant="caption" sx={{ fontSize: "14px"}}> {content} </Typography>
+        </Box>
       </Box>
     </Box>
   );
