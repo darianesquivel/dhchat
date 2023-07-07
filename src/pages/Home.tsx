@@ -52,7 +52,7 @@ export default function Home() {
     return () => {
       getConversations();
     };
-  }, []);
+  }, [conversationsRef]);
 
   useEffect(() => {
     scrollToBottom();
@@ -191,7 +191,7 @@ export default function Home() {
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
-            backgroundImage: displayMessages ? `url(${bg_light})` : '',
+            backgroundImage:  `url(${bg_light})` ,
             backgroundSize: "contain",
             backgroundColor: "white",
           }}
@@ -200,7 +200,7 @@ export default function Home() {
             <>
               <Box
                 sx={{
-                  backgroundColor: "#A8CF45",
+                  backgroundColor: "#f1f7e1",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
@@ -228,7 +228,7 @@ export default function Home() {
                 }}
               >
                 {messages?.map((message: any, key) => {
-                  const { content, avatar, user, translatedContent, sendBy } =
+                  const { content, avatar, user, translatedContent, sendBy, sendAt } =
                     message;
                   return (
                     <Message
@@ -239,6 +239,7 @@ export default function Home() {
                       translatedContent={translatedContent?.text}
                       userId={sendBy}
                       lenguage={lenguage}
+                      sendAt={sendAt}
                     />
                   );
                 })}
@@ -293,7 +294,7 @@ export default function Home() {
             >
               <Typography variant="button" fontWeight={600}>
                 {" "}
-                Select a chat
+                <br /><br />Select a chat
               </Typography>
             </Box>
           )}

@@ -16,7 +16,7 @@ export default function CustomSelected({ setLenguage }: any) {
 
   return (
     <Box>
-      <FormControl sx={{ m: 1, maxWidth: 100 }}>
+      <FormControl sx={{ m: 0, maxWidth: 150 }}>
         <FormHelperText>Translate to</FormHelperText>
         <Select
           value={value}
@@ -25,18 +25,18 @@ export default function CustomSelected({ setLenguage }: any) {
           inputProps={{ "aria-label": "Translate to" }}
           size="small"
         >
-          <MenuItem value={"ar"}>Arab</MenuItem>
-          <MenuItem value={"de"}>Deutsch</MenuItem>
-          <MenuItem value={"es"}>Spanish</MenuItem>
-          <MenuItem value={"en"}>English</MenuItem>
-          <MenuItem value={"fr"}>French</MenuItem>
-          <MenuItem value={"hi"}>Hindi</MenuItem>
-          <MenuItem value={"it"}>Italian</MenuItem>
-          <MenuItem value={"ja"}>Japanese</MenuItem>
-          <MenuItem value={"pl"}>Polish</MenuItem>
-          <MenuItem value={"pt"}>Portuguese</MenuItem>
-          <MenuItem value={"ru"}>Russian</MenuItem>
-          <MenuItem value={"zh"}>Chinese</MenuItem>
+    <MenuItem value={"ar"}>Arab</MenuItem>
+    <MenuItem value={"zh"}>Chinese</MenuItem>
+    <MenuItem value={"de"}>Deutsch</MenuItem>
+    <MenuItem value={"en"}>English</MenuItem>
+    <MenuItem value={"fr"}>French</MenuItem>
+    <MenuItem value={"hi"}>Hindi</MenuItem>
+    <MenuItem value={"it"}>Italian</MenuItem>
+    <MenuItem value={"ja"}>Japanese</MenuItem>
+    <MenuItem value={"pl"}>Polish</MenuItem>
+    <MenuItem value={"pt"}>Portuguese</MenuItem>
+    <MenuItem value={"ru"}>Russian</MenuItem>
+    <MenuItem value={"es"}>Spanish</MenuItem>
         </Select>
       </FormControl>
     </Box>

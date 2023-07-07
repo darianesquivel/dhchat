@@ -24,7 +24,7 @@ export default function Chat({
         height: "70px",
         minWidth: "200px",
         p: 1,
-        backgroundColor: "#A8CF45",
+        backgroundColor: "#f1f7e1",
         display: "flex",
         alignItems: "center",
       }}
