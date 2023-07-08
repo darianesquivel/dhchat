@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emoji-mart/data": "^1.1.2",
+    "@emoji-mart/react": "^1.1.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@material-ui/styles": "^4.11.5",
@@ -17,6 +19,7 @@
     "@types/node": "^16.7.13",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "emoji-mart": "^5.5.2",
     "firebase": "^9.22.2",
     "moment": "^2.29.4",
     "react": "^18.2.0",
