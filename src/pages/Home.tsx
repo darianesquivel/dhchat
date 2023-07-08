@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, TextField, Typography } from "@mui/material";
+import { Avatar, Box, Button, TextField, Tooltip, Typography } from "@mui/material";
 import { UserAuth } from "../context/AuthContext";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -16,10 +16,13 @@ import {
 import { db } from "../api/Config/firebase";
 import Message from "../components/Message";
 import SendIcon from "@mui/icons-material/Send";
+import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import bg_light from "../assets/images/bg_light.png";
 import logo from '../assets/images/logo.png'
 import Chat from "../components/Chat";
 import CustomSelected from "../components/CustomSelect";
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
 
 export default function Home() {
   const { user } = UserAuth();
@@ -32,6 +35,16 @@ export default function Home() {
   const [displayMessages, setDisplayMessages] = useState(false);
   const [lenguage, setLenguage] = useState("en");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [showEmoji, setShowEmoji] = useState(false);
+
+  // //add emoji
+  const addEmoji = (e: { unified: string; }) => {
+    const sym = e.unified.split("_");
+    const codeArray: string[] = [];
+    sym.forEach((el) => codeArray.push("0x" + el));
+    const emoji = String.fromCodePoint(...codeArray.map(el => parseInt(el, 16)));
+    setNewMessage(newMessage + emoji);
+  };
 
   const [messagesRef, setmessagesRef] = useState<CollectionReference | null>(
     null
@@ -152,7 +165,6 @@ export default function Home() {
           sx={{
             width: "15%",
             minWidth: "220px",
-
             borderRadius: 2,
             p: 2,
             display: "flex",
@@ -162,7 +174,7 @@ export default function Home() {
             alignItems: "center",
           }}
         >
-            <img width="100px" src={logo} alt="logo" />
+          <img width="100px" src={logo} alt="logo" />
 
           <Typography variant="button" fontWeight={600} pt={3}>
             Chats
@@ -213,49 +225,85 @@ export default function Home() {
                     {(conversation as any)?.name}
                   </Typography>
                 </Box>
-
                 <CustomSelected setLenguage={setLenguage} />
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  height: "90%",
-                  borderRadius: 2,
-                  p: 1,
-                  overflow: "auto",
-                  mb: 1,
-                }}
-              >
-                {messages?.map((message: any, key) => {
-                  const { content, avatar, user, translatedContent, sendBy, sendAt } =
-                    message;
-                  return (
-                    <Message
-                      key={key}
-                      content={content.text}
-                      avatar={avatar}
-                      name={user}
-                      translatedContent={translatedContent?.text}
-                      userId={sendBy}
-                      lenguage={lenguage}
-                      sendAt={sendAt}
-                    />
-                  );
-                })}
-                <div ref={messagesEndRef} />
-              </Box>
+                </Box>
+                
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "90%",
+                    borderRadius: 2,
+                    p: 1,
+                    overflow: "auto",
+                    mb: 1,
+                  }}
+                >
+                  {messages?.map((message: any, key) => {
+                    const { content, avatar, user, translatedContent, sendBy, sendAt } =
+                      message;
+                    return (
+                      <Message
+                        key={key}
+                        content={content.text}
+                        avatar={avatar}
+                        name={user}
+                        translatedContent={translatedContent?.text}
+                        userId={sendBy}
+                        lenguage={lenguage}
+                        sendAt={sendAt}
+                      />
+                    );
+                  })}
+                
 
-              <Box
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  gap: 1,
-                  p: 1,
-                  backgroundColor: "#A8CF45",
-                  borderEndEndRadius: 10,
-                }}
-              >
+
+                <div ref={messagesEndRef} />
+
+                {showEmoji && (
+                  <Box
+                  sx={{
+                    display: "flex",
+                    position: "absolute",
+                    marginTop: "250px",
+                  }}
+                  >     
+                  <Picker
+                    sx={{}}
+                    data={data}
+                    emojiSize={24}
+                    emojiButtonSize={36}
+                    onEmojiSelect={addEmoji}
+                    maxFrequentRows={0}
+                    //locale={en}
+                  />
+                  </Box>
+                  )}
+                </Box>
+
+                <Box
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    gap: 1,
+                    p: 1,
+                    backgroundColor: "#A8CF45",
+                    borderRadius: 2,
+                  }}
+                >
+                <Tooltip title="Emojis">
+                <Button
+                  sx={{ borderRadius: 10 }}
+                  variant="contained"
+                  color="success"
+                  style={{ width: "10px"}}
+                  onClick={() => setShowEmoji(!showEmoji)}
+                  startIcon={<EmojiEmotionsIcon style={{ marginLeft: "10px" }}/>}
+                  size="large"
+                >
+                </Button>
+                </Tooltip>
+              
                 <TextField
                   sx={{
                     backgroundColor: "white",
@@ -272,17 +320,19 @@ export default function Home() {
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyDown={handleKeyDown}
                 />
+
+                <Tooltip title="Send">
                 <Button
                   sx={{ borderRadius: 10 }}
                   variant="contained"
                   color="success"
                   style={{ width: "10%" }}
                   onClick={handleSubmit}
-                  endIcon={<SendIcon />}
-                  size="small"
+                  startIcon={<SendIcon style={{ marginLeft: "10px" }} />}
+                  size="large"
                 >
-                  Send
                 </Button>
+                </Tooltip>
               </Box>
             </>
           ) : (
