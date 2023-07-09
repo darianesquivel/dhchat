@@ -291,7 +291,7 @@ export default function Home() {
                     borderRadius: 2,
                   }}
                 >
-                <Tooltip title="Emojis">
+                <Tooltip title="Emojis" placement="top">
                 <Button
                   sx={{ borderRadius: 10 }}
                   variant="contained"
@@ -321,7 +321,7 @@ export default function Home() {
                   onKeyDown={handleKeyDown}
                 />
 
-                <Tooltip title="Send">
+                <Tooltip title="Send" placement="top">
                 <Button
                   sx={{ borderRadius: 10 }}
                   variant="contained"
