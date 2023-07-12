@@ -1,12 +1,13 @@
-import * as React from "react";
+import { useState } from "react";
 import MenuItem from "@mui/material/MenuItem";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { Box } from "@mui/joy";
+import { Box, Switch } from '@mui/material';
 
 export default function CustomSelected({ setLenguage }: any) {
-  const [value, setValue] = React.useState("en");
+  const [value, setValue] = useState("en");
+  const [showTranslateMe, setShowTranslateMe] = useState(false);
 
   const handleChange = (event: SelectChangeEvent) => {
     setValue(event.target.value);
@@ -14,8 +15,16 @@ export default function CustomSelected({ setLenguage }: any) {
     setLenguage(selectedLanguage);
   };
 
+  const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setShowTranslateMe(event.target.checked);
+  };
+
   return (
     <Box>
+      <FormControl sx={{ m: 0, maxWidth: 150, alignItems: "center", }}>
+        <FormHelperText>Translate me</FormHelperText>
+        <Switch size="medium" checked={showTranslateMe} onChange={handleSwitchChange} />
+      </FormControl>
       <FormControl sx={{ m: 0, maxWidth: 150 }}>
         <FormHelperText>Translate to</FormHelperText>
         <Select
@@ -25,18 +34,18 @@ export default function CustomSelected({ setLenguage }: any) {
           inputProps={{ "aria-label": "Translate to" }}
           size="small"
         >
-    <MenuItem value={"ar"}>Arab</MenuItem>
-    <MenuItem value={"zh"}>Chinese</MenuItem>
-    <MenuItem value={"de"}>Deutsch</MenuItem>
-    <MenuItem value={"en"}>English</MenuItem>
-    <MenuItem value={"fr"}>French</MenuItem>
-    <MenuItem value={"hi"}>Hindi</MenuItem>
-    <MenuItem value={"it"}>Italian</MenuItem>
-    <MenuItem value={"ja"}>Japanese</MenuItem>
-    <MenuItem value={"pl"}>Polish</MenuItem>
-    <MenuItem value={"pt"}>Portuguese</MenuItem>
-    <MenuItem value={"ru"}>Russian</MenuItem>
-    <MenuItem value={"es"}>Spanish</MenuItem>
+          <MenuItem value={"ar"}>Arab</MenuItem>
+          <MenuItem value={"zh"}>Chinese</MenuItem>
+          <MenuItem value={"de"}>Deutsch</MenuItem>
+          <MenuItem value={"en"}>English</MenuItem>
+          <MenuItem value={"fr"}>French</MenuItem>
+          <MenuItem value={"hi"}>Hindi</MenuItem>
+          <MenuItem value={"it"}>Italian</MenuItem>
+          <MenuItem value={"ja"}>Japanese</MenuItem>
+          <MenuItem value={"pl"}>Polish</MenuItem>
+          <MenuItem value={"pt"}>Portuguese</MenuItem>
+          <MenuItem value={"ru"}>Russian</MenuItem>
+          <MenuItem value={"es"}>Spanish</MenuItem>
         </Select>
       </FormControl>
     </Box>

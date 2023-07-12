@@ -16,7 +16,7 @@ export default function EmojiPicker(props) {
     return () => {
       instance.current = null
     }
-  }, [])
+  }, [props])
 
   return React.createElement('div', { ref })
 }
