@@ -17,6 +17,7 @@ import { db } from "../api/Config/firebase";
 import Message from "../components/Message";
 import SendIcon from "@mui/icons-material/Send";
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import bg_light from "../assets/images/bg_light.png";
 import logo from '../assets/images/logo.png'
 import Chat from "../components/Chat";
@@ -37,7 +38,7 @@ export default function Home() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [showEmoji, setShowEmoji] = useState(false);
 
-  // //add emoji
+  // Add emoji
   const addEmoji = (e: { unified: string; }) => {
     const sym = e.unified.split("_");
     const codeArray: string[] = [];
@@ -46,9 +47,7 @@ export default function Home() {
     setNewMessage(newMessage + emoji);
   };
 
-  const [messagesRef, setmessagesRef] = useState<CollectionReference | null>(
-    null
-  );
+  const [messagesRef, setmessagesRef] = useState<CollectionReference | null>(null);
 
   useEffect(() => {
     const getConversations = onSnapshot(
@@ -203,7 +202,7 @@ export default function Home() {
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
-            backgroundImage:  `url(${bg_light})` ,
+            backgroundImage:  `url(${bg_light})`,
             backgroundSize: "contain",
             backgroundColor: "white",
           }}
@@ -256,8 +255,6 @@ export default function Home() {
                     );
                   })}
                 
-
-
                 <div ref={messagesEndRef} />
 
                 {showEmoji && (
@@ -269,7 +266,6 @@ export default function Home() {
                   }}
                   >     
                   <Picker
-                    sx={{}}
                     data={data}
                     emojiSize={24}
                     emojiButtonSize={36}
@@ -299,6 +295,19 @@ export default function Home() {
                   style={{ width: "10px"}}
                   onClick={() => setShowEmoji(!showEmoji)}
                   startIcon={<EmojiEmotionsIcon style={{ marginLeft: "10px" }}/>}
+                  size="large"
+                >
+                </Button>
+                </Tooltip>
+
+                <Tooltip title="Attach" placement="top">
+                <Button
+                  sx={{ borderRadius: 10 }}
+                  variant="contained"
+                  color="success"
+                  style={{ width: "10px"}}
+                  //onClick={() => setShowEmoji(!showEmoji)}
+                  startIcon={<AttachFileIcon style={{ marginLeft: "10px" }}/>}
                   size="large"
                 >
                 </Button>
