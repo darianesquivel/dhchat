@@ -56,7 +56,6 @@ export default function Home() {
   };
 
   const handleSubmitNewChat = async () => {
-    
     const newConversation = {
       name: chatName,
       avatar: avatar,
@@ -70,20 +69,7 @@ export default function Home() {
   }
 
 
-  const fetchUsers = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, 'users'));
-      const userData:any = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data()
-      }));
 
-      const filteredUsers = userData.filter((u:any) => u.email !== user?.email);
-      setUsers(filteredUsers);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
 
   // Add emoji
@@ -110,6 +96,21 @@ export default function Home() {
         setConversations(conversations);
       }
     );
+
+    const fetchUsers = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'users'));
+        const userData:any = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+  
+        const filteredUsers = userData.filter((u:any) => u.email !== user?.email);
+        setUsers(filteredUsers);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
     return () => {
       getConversations();
