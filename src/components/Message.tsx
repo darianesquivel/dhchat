@@ -26,6 +26,7 @@ interface MessageProps {
     ru?: string;
     zh?: string;
   };
+  showTranslateMe?: boolean;
 }
 
 export default function Message({
@@ -36,57 +37,61 @@ export default function Message({
   userId,
   lenguage,
   sendAt,
+  showTranslateMe,
 }: MessageProps) {
   const { user } = UserAuth();
   const timestampInMilliseconds = (sendAt?.seconds && sendAt?.nanoseconds) ? sendAt.seconds * 1000 + sendAt.nanoseconds / 1000000 : 0;
   const formattedDate = moment(timestampInMilliseconds).format('DD/MM/YYYY HH:mm');
 
   return (
+
+    (user?.uid !== userId) ? (
+
     <Box
-      sx={
-        user?.uid !== userId
-          ? { display: "flex", alignItems: "flex-start", gap: 1, m: 1 }
-          : {
-              display: "flex",
-              flexDirection: "row-reverse",
-              alignItems: "flex-start",
-              gap: 0.5,
-              m: 0.5,
-              justifyContent: "flex-start",
-            }
-      }
+      sx={{ display: "flex", alignItems: "flex-start", gap: 1, m: 1 }}
     >
       <Box>
         <Avatar alt="avatar" src={avatar} style={{ width: '60px', height: '60px' }} />
       </Box>
-
       <Box sx={{ p: 0.5 }}>
-        <Typography sx={{ p: 0.3 }} fontWeight={600} variant="body2">
-          {user?.uid !== userId ? name : null}
-        </Typography>
-
+        <Typography sx={{ p: 0.3, textAlign:"start" }} fontWeight={600} variant="body2">{name}</Typography>
         <Box
-          sx={{
-            py: 0.5,
-            px: 2,
-            ml: 2,
-            background: "#f1f1f1",
-            borderRadius: 10,
-            display: "inline-block",
-          }}
-        >
+        sx={{
+          // py: 0.5,
+          // px: 2,
+          // ml: 2,
+          background: "#eeeeee",
+          display: "inline-block",
+          borderRadius: 3,
+          padding: '10px 15px',
+          marginTop: '10px',
+          marginLeft: 'auto' ,
+          position: 'relative',
+        }}
+      >
           <Typography
             variant="body2"
             fontSize={10}
-            align="inherit"
+            align="left"
             color={"grey"}
           >
-            {user?.uid !== userId ? `original - ${formattedDate}` : `me - ${formattedDate}`}
+            {`${formattedDate}`}
           </Typography>
           <Typography variant="caption" sx={{ fontSize: "14px"}}> {content} </Typography>
-        </Box>
-
-        {/* {user?.uid !== userId ? ( */}
+          <Box
+          sx={{
+          position: 'absolute',
+          content: '""',
+          borderStyle: 'solid',
+          borderWidth: '10px 0 10px 10px',
+          borderColor: 'transparent transparent transparent #eeeeee',
+          top: '-10px',
+          left: '15px' ,
+          right: 'auto',
+          transform: 'translateX(-50%)' ,
+        }}
+        />
+      </Box>
           <Box
             sx={{ display: "flex", flexDirection: "column", gap: 0.5, p: 0.5 }}
           >
@@ -94,15 +99,16 @@ export default function Message({
               sx={{
                 display: "flex",
                 gap: 1,
-                borderRadius: 5,
+                borderRadius: 3,
                 p: 0.5,
                 alignItems: "center",
                 background: "#f1f7e1",
                 fontSize: "14px",
+                marginLeft: "-36px",
               }}
               variant="caption"
             >
-              <Chip color="success" size="small" label={lenguage} />
+              <Chip color="success" size="small" label={lenguage} sx={{width: '35px'}}/>
               {translatedContent?.[
                 lenguage as keyof typeof translatedContent
               ] ? (
@@ -112,9 +118,102 @@ export default function Message({
               )}
             </Typography>
           </Box>
-        {/* ) : null} */}
+      </Box>
+    </Box>
+
+  ) : (
+
+    <Box
+    sx={{
+      display: "flex",
+      flexDirection: "row-reverse",
+      alignItems: "flex-start",
+      gap: 1,
+      m: 1,
+      justifyContent: "flex-start",
+    }}
+    >
+      <Box>
+        <Avatar alt="avatar" src={avatar} style={{ width: '60px', height: '60px' }} />
+      </Box>
+      <Box sx={{ p: 0.5, alignItems: "end", textAlign: "end" }}>
+        <Typography sx={{ p: 0.3, textAlign: "end"}} fontWeight={600} variant="body2">Me</Typography>
+        
+        <Box
+          sx={{
+            // py: 0.5,
+            // px: 2,
+            // ml: 2,
+            background: "#eeeeee",
+            display: "inline-block",
+            borderRadius: 3,
+            padding: '10px 15px',
+            marginTop: '10px',
+            marginLeft: 'auto' ,
+            position: 'relative',
+          }}
+        >
+
+        <Typography
+          variant="body2"
+          fontSize={10}
+          align="right"
+          color={"grey"}
+        >
+          {`${formattedDate}`}
+        </Typography>
+        <Typography variant="caption" sx={{ fontSize: "14px"}}> {content} </Typography>
+
+        <Box
+        sx={{
+          position: 'absolute',
+          content: '""',
+          borderStyle: 'solid',
+          borderWidth: '10px 10px 0 10px',
+          borderColor: 'transparent #eeeeee transparent transparent',
+          top: '-10px',
+          left: 'auto' ,
+          right: '0px',
+          transform: 'translateX(-50%)' ,
+        }}
+      />
+      </Box>
+
+      <Box
+        sx={{ display: "flex", flexDirection: "column", gap: 0.5, p: 0.5 }}
+      >
+
+        {showTranslateMe && 
+          <Typography
+            sx={{
+              display: "block",
+              gap: 1,
+              borderRadius: 3,
+              p: 0.5,
+              alignItems: "center",
+              background: "#f1f7e1",
+              fontSize: "14px",
+              textAlign: "end",
+              marginRight: "-38px",
+            }}
+            variant="caption"
+          >
+            {translatedContent?.[
+              lenguage as keyof typeof translatedContent
+            ] ? (
+              translatedContent[lenguage as keyof typeof translatedContent]
+            ) : (
+              <Skeleton width={40} />
+            )}
+            <Chip color="success" size="small" label={lenguage} sx={{width: '35px', marginLeft: '10px'}}/>
+          </Typography>
+        }
 
       </Box>
     </Box>
+  </Box>
+  
+  )
+
   );
 }
