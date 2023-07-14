@@ -1,5 +1,6 @@
 import { Avatar, Box, Chip, Skeleton, Typography } from "@mui/material";
 import moment from 'moment';
+import { useState } from "react";
 import { UserAuth } from "../context/AuthContext";
 
 interface MessageProps {
@@ -208,6 +209,7 @@ export default function Message({
             <Chip color="success" size="small" label={lenguage} sx={{width: '35px', marginLeft: '10px'}}/>
           </Typography>
         }
+        
 
       </Box>
     </Box>

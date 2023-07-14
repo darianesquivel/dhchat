@@ -25,6 +25,7 @@ import Chat from "../components/Chat";
 import CustomSelected from "../components/CustomSelect";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
+import ImageUploader from '../components/ImageUploader';
 import AddIcon from '@mui/icons-material/Add';
 import ListAvatar from "../components/ListAvatar";
 
@@ -42,6 +43,21 @@ export default function Home() {
   const [translateMe , setTranslateMe] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [showEmoji, setShowEmoji] = useState(false);
+  const [showImageUpload, setShowImageUpload] = useState(false);
+  const formContainerRef = useRef<HTMLDivElement>(null);
+  const emojiContainerRef = useRef<HTMLDivElement>(null);
+
+  const toggleShowEmoji = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    setShowEmoji(!showEmoji);
+    setShowImageUpload(false);
+  };
+
+  const toggleImageUpload = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    setShowImageUpload(!showImageUpload);
+    setShowEmoji(false);
+  };
   const [chatName, setChatName] = useState('')
   const [avatar, setAvatar] = useState('')
   const [users, setUsers] = useState([])
@@ -69,10 +85,6 @@ export default function Home() {
 
   }
 
-
-
-
-
   // Add emoji
   const addEmoji = (e: { unified: string; }) => {
     const sym = e.unified.split("_");
@@ -83,6 +95,29 @@ export default function Home() {
   };
 
   const [messagesRef, setmessagesRef] = useState<CollectionReference | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        formContainerRef.current &&
+        !formContainerRef.current.contains(event.target as Node)
+      ) {
+        setShowImageUpload(false);
+      }
+      if (
+        emojiContainerRef.current &&
+        !emojiContainerRef.current.contains(event.target as Node)
+      ) {
+        setShowEmoji(false);
+      }
+    };
+  
+    document.addEventListener('click', handleClickOutside);
+  
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     const getConversations = onSnapshot(
@@ -189,6 +224,49 @@ export default function Home() {
       console.error(error);
     }
   };
+
+  // const handleSubmit = async () => {
+  //   try {
+  //     if (newMessage === "") return;
+  //     if (messagesRef) {
+  //       const messageData = {
+  //         content: {
+  //           text: newMessage,
+  //         },
+  //         sendAt: serverTimestamp(),
+  //         sendBy: user?.uid,
+  //         avatar: user?.photoURL,
+  //         user: user?.displayName,
+  //         type: "text",
+  //       };
+  
+  //       if (selectedImage) {
+  //         const storage = getStorage();
+  //         const storageRef = ref(storage, selectedImage.name);
+  //         await uploadBytes(storageRef, selectedImage);
+  //         const downloadURL = await getDownloadURL(storageRef);
+  //         messageData.content.imageURL = downloadURL;
+  //       }
+  
+  //       addDoc(messagesRef, messageData);
+  
+  //       const conversationRef = doc(
+  //         collection(db, "conversations"),
+  //         conversationId
+  //       );
+  
+  //       updateDoc(conversationRef, {
+  //         lastMessage: newMessage,
+  //         lastMessageSendBy: user?.displayName,
+  //       });
+  
+  //       setNewMessage("");
+  //       setSelectedImage(null);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   const scrollToBottom = () => {
     if (messagesEndRef.current && messagesEndRef.current.scrollIntoView) {
@@ -353,6 +431,7 @@ export default function Home() {
                     position: "absolute",
                     marginTop: "250px",
                   }}
+                  ref={emojiContainerRef}
                   >     
                   <Picker
                     data={data}
@@ -365,6 +444,24 @@ export default function Home() {
                   </Box>
                   )}
                 </Box>
+
+                {showImageUpload && (
+                <Box
+                sx={{
+                  display: "flex",
+                  position: "absolute",
+                  marginTop: "717px",
+                  //marginBottom: "15px",
+                  marginLeft: "80px",
+                }}
+                ref={formContainerRef}
+                >    
+                  <ImageUploader 
+                    showImageUpload={showImageUpload}
+                    toggleImageUpload={toggleImageUpload as () => void}
+                  />
+                </Box>
+              )}
 
                 <Box
                   sx={{
@@ -382,7 +479,7 @@ export default function Home() {
                   variant="contained"
                   color="success"
                   style={{ width: "10px"}}
-                  onClick={() => setShowEmoji(!showEmoji)}
+                  onClick={(event) => toggleShowEmoji(event)}
                   startIcon={<EmojiEmotionsIcon style={{ marginLeft: "10px" }}/>}
                   size="large"
                 >
@@ -395,7 +492,7 @@ export default function Home() {
                   variant="contained"
                   color="success"
                   style={{ width: "10px"}}
-                  //onClick={() => setShowEmoji(!showEmoji)}
+                  onClick={(event) => toggleImageUpload(event)}
                   startIcon={<AttachFileIcon style={{ marginLeft: "10px" }}/>}
                   size="large"
                 >
