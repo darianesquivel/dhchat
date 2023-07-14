@@ -1,5 +1,6 @@
 import { Avatar, Box, Chip, Skeleton, Typography } from "@mui/material";
 import moment from 'moment';
+import { useState } from "react";
 import { UserAuth } from "../context/AuthContext";
 
 interface MessageProps {
@@ -26,7 +27,6 @@ interface MessageProps {
     ru?: string;
     zh?: string;
   };
-  showTranslateMe?: boolean;
 }
 
 export default function Message({
@@ -37,11 +37,13 @@ export default function Message({
   userId,
   lenguage,
   sendAt,
-  showTranslateMe,
 }: MessageProps) {
   const { user } = UserAuth();
   const timestampInMilliseconds = (sendAt?.seconds && sendAt?.nanoseconds) ? sendAt.seconds * 1000 + sendAt.nanoseconds / 1000000 : 0;
   const formattedDate = moment(timestampInMilliseconds).format('DD/MM/YYYY HH:mm');
+  const [showTranslateMe, setShowTranslateMe] = useState(false);
+
+{console.log('showTranslateMe2: ', showTranslateMe)}
 
   return (
 
@@ -208,6 +210,7 @@ export default function Message({
             <Chip color="success" size="small" label={lenguage} sx={{width: '35px', marginLeft: '10px'}}/>
           </Typography>
         }
+        
 
       </Box>
     </Box>
