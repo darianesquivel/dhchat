@@ -27,6 +27,7 @@ interface MessageProps {
     zh?: string;
   };
   showTranslateMe?: boolean;
+  translateMe?:boolean;
 }
 
 export default function Message({
@@ -37,12 +38,11 @@ export default function Message({
   userId,
   lenguage,
   sendAt,
-  showTranslateMe,
+  translateMe
 }: MessageProps) {
   const { user } = UserAuth();
   const timestampInMilliseconds = (sendAt?.seconds && sendAt?.nanoseconds) ? sendAt.seconds * 1000 + sendAt.nanoseconds / 1000000 : 0;
   const formattedDate = moment(timestampInMilliseconds).format('DD/MM/YYYY HH:mm');
-
   return (
 
     (user?.uid !== userId) ? (
@@ -183,7 +183,7 @@ export default function Message({
         sx={{ display: "flex", flexDirection: "column", gap: 0.5, p: 0.5 }}
       >
 
-        {showTranslateMe && 
+        {translateMe && 
           <Typography
             sx={{
               display: "block",

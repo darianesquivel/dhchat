@@ -39,6 +39,7 @@ export default function Home() {
   const [conversationId, setConversationId] = useState("");
   const [displayMessages, setDisplayMessages] = useState(false);
   const [lenguage, setLenguage] = useState("en");
+  const [translateMe , setTranslateMe] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [showEmoji, setShowEmoji] = useState(false);
   const [chatName, setChatName] = useState('')
@@ -310,7 +311,7 @@ export default function Home() {
                   </Box>
                 
                 </Box>
-                <CustomSelected setLenguage={setLenguage} />
+                <CustomSelected setLenguage={setLenguage} setTranslateMe={setTranslateMe} />
                 </Box>
                 
                 <Box
@@ -337,6 +338,8 @@ export default function Home() {
                         userId={sendBy}
                         lenguage={lenguage}
                         sendAt={sendAt}
+                        translateMe={translateMe}
+
                       />
                     );
                   })}

@@ -115,9 +115,6 @@ export default function CustomDrawer() {
 
   const [openProfile, setOpenProfie] = React.useState(false);
 
-
-
-  
   const { logOut, user } = UserAuth()
 
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -129,8 +126,6 @@ export default function CustomDrawer() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
-  ///////
 
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
