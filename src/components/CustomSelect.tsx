@@ -5,7 +5,7 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Box, Switch } from '@mui/material';
 
-export default function CustomSelected({ setLenguage}: any) {
+export default function CustomSelected({ setLenguage, setTranslateMe }: any) {
   const [value, setValue] = useState("en");
   const [showTranslateMe, setShowTranslateMe] = useState(false);
 
@@ -17,6 +17,7 @@ export default function CustomSelected({ setLenguage}: any) {
 
   const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setShowTranslateMe(event.target.checked);
+    setTranslateMe(event.target.checked)
   };
 
   return (

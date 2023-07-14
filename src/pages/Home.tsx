@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, TextField, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, TextField, Tooltip, Typography } from "@mui/material";
 import { UserAuth } from "../context/AuthContext";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -12,6 +12,7 @@ import {
   updateDoc,
   doc,
   getDoc,
+  getDocs,
 } from "firebase/firestore";
 import { db } from "../api/Config/firebase";
 import Message from "../components/Message";
@@ -25,17 +26,21 @@ import CustomSelected from "../components/CustomSelect";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import ImageUploader from '../components/ImageUploader';
+import AddIcon from '@mui/icons-material/Add';
+import ListAvatar from "../components/ListAvatar";
 
 export default function Home() {
   const { user } = UserAuth();
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const conversationsRef = collection(db, "conversations");
+  // const userRef = collection(db, "users");
   const [conversations, setConversations] = useState([]);
   const [conversation, setConversation] = useState();
   const [conversationId, setConversationId] = useState("");
   const [displayMessages, setDisplayMessages] = useState(false);
   const [lenguage, setLenguage] = useState("en");
+  const [translateMe , setTranslateMe] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [showEmoji, setShowEmoji] = useState(false);
   const [showImageUpload, setShowImageUpload] = useState(false);
@@ -53,6 +58,32 @@ export default function Home() {
     setShowImageUpload(!showImageUpload);
     setShowEmoji(false);
   };
+  const [chatName, setChatName] = useState('')
+  const [avatar, setAvatar] = useState('')
+  const [users, setUsers] = useState([])
+  const [participants, setParticipants] = useState([])
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSubmitNewChat = async () => {
+    const newConversation = {
+      name: chatName,
+      avatar: avatar,
+      createAt: serverTimestamp(),
+      participants
+    };
+
+    await addDoc(conversationsRef,newConversation);
+    setOpen(false);
+
+  }
 
   // Add emoji
   const addEmoji = (e: { unified: string; }) => {
@@ -94,16 +125,35 @@ export default function Home() {
       (snapshot) => {
         let conversations: any = [];
         snapshot.forEach((doc) => {
-          conversations.push({ ...doc.data(), id: doc.id });
+          if(doc.data().participants?.includes(user?.email) || doc.data().participants?.includes("open-group") ){
+            conversations.push({ ...doc.data(), id: doc.id });
+          }
         });
         setConversations(conversations);
       }
     );
 
+    const fetchUsers = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'users'));
+        const userData:any = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+  
+        const filteredUsers = userData.filter((u:any) => u.email !== user?.email);
+        setUsers(filteredUsers);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     return () => {
       getConversations();
+      fetchUsers()
     };
-  }, [conversationsRef]);
+  }, []);
+  
 
   useEffect(() => {
     scrollToBottom();
@@ -257,9 +307,34 @@ export default function Home() {
         >
           <img width="100px" src={logo} alt="logo" />
 
-          <Typography variant="button" fontWeight={600} pt={3}>
+          <Box sx={{display:'flex',alignItems:'center', gap:1}}>
+
+          <Typography variant="button" fontWeight={600}>
             Chats
           </Typography>
+          <IconButton onClick={handleClickOpen}><AddIcon fontSize="small"/></IconButton>
+          <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+         Add new chat
+        </DialogTitle>
+        <DialogContent>
+        <TextField onChange={(e)=> setChatName(e.target.value)} id="outlined-basic" label="Name" variant="outlined" />
+        <TextField onChange={(e)=> setAvatar(e.target.value)} id="outlined-basic" label="Avatar" variant="outlined" />
+        <ListAvatar users = {users} onAddParticipants = {setParticipants} currentUser = {user?.email}/>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSubmitNewChat} autoFocus>
+            Add
+          </Button>
+        </DialogActions>
+      </Dialog>
+          </Box>
 
           {conversations?.map((conversation: any, key) => {
             const { lastMessage, avatar, name, id, lastMessageSendBy } =
@@ -302,11 +377,19 @@ export default function Home() {
               >
                 <Box sx={{ display: "flex", gap: 2, p: 1 }}>
                   <Avatar src={(conversation as any)?.avatar} />
+                  <Box>
                   <Typography variant="overline" fontWeight={800}>
                     {(conversation as any)?.name}
                   </Typography>
+                  <Box sx={{display:'flex',gap:1}}>
+                  {(conversation as any)?.participants.map((e:any)=><Chip sx={{fontSize:10}} size="small" label={e}/>)} 
+                  </Box>
+
+                 
+                  </Box>
+                
                 </Box>
-                <CustomSelected setLenguage={setLenguage} />
+                <CustomSelected setLenguage={setLenguage} setTranslateMe={setTranslateMe} />
                 </Box>
                 
                 <Box
@@ -333,6 +416,8 @@ export default function Home() {
                         userId={sendBy}
                         lenguage={lenguage}
                         sendAt={sendAt}
+                        translateMe={translateMe}
+
                       />
                     );
                   })}
@@ -453,8 +538,7 @@ export default function Home() {
               }}
             >
               <Typography variant="button" fontWeight={600}>
-                {" "}
-                <br /><br />Select a chat
+             Select a chat
               </Typography>
             </Box>
           )}
