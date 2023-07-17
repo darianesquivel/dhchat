@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent, MouseEvent } from 'react';
 import { getStorage, ref, uploadBytes } from 'firebase/storage';
-import { Box, Button, Chip } from '@mui/material';
+import { Box, Button, Chip, Divider } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 
 interface ImageUploaderProps {
@@ -73,6 +73,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       }}
     >
       <input type="file" onChange={handleImageChange} accept="image/*" />
+      {/* <Divider orientation="vertical" flexItem /> */}
       {uploadError && (
         <Chip
           color="error"

@@ -29,7 +29,7 @@ export default function Chat({
         alignItems: "center",
       }}
     >
-      <Avatar src={avatar} />
+      <Avatar src={avatar} variant="rounded" />
       <Box sx={{ flexGrow: 1, ml: 1 }}>
         <Typography variant="overline" fontWeight={800}>
           {name}
