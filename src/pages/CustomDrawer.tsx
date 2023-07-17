@@ -280,7 +280,7 @@ export default function CustomDrawer() {
         <DrawerHeader />
         <Home />
         <Dialog
-        fullScreen
+        //fullScreen
         open={openProfile}
         onClose={handleCloseProfile}
         TransitionComponent={Transition}

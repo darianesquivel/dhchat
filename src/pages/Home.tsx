@@ -58,6 +58,7 @@ export default function Home() {
     setShowImageUpload(!showImageUpload);
     setShowEmoji(false);
   };
+  
   const [chatName, setChatName] = useState('')
   const [avatar, setAvatar] = useState('')
   const [users, setUsers] = useState([])
@@ -429,7 +430,7 @@ export default function Home() {
                   sx={{
                     display: "flex",
                     position: "absolute",
-                    marginTop: "250px",
+                    marginTop: "240px",
                   }}
                   ref={emojiContainerRef}
                   >     
@@ -450,7 +451,7 @@ export default function Home() {
                 sx={{
                   display: "flex",
                   position: "absolute",
-                  marginTop: "717px",
+                  marginTop: "716px",
                   //marginBottom: "15px",
                   marginLeft: "80px",
                 }}
