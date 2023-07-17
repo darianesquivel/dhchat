@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, TextField, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, TextField, Tooltip, Typography } from "@mui/material";
 import { UserAuth } from "../context/AuthContext";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -307,9 +307,9 @@ export default function Home() {
           }}
         >
           <img width="100px" src={logo} alt="logo" />
+          <Divider orientation="horizontal" flexItem sx={{marginTop:"20px", marginBottom:"5px"}}/>
 
           <Box sx={{display:'flex',alignItems:'center', gap:1}}>
-
           <Typography variant="button" fontWeight={600}>
             Chats
           </Typography>
@@ -377,7 +377,7 @@ export default function Home() {
                 }}
               >
                 <Box sx={{ display: "flex", gap: 2, p: 1 }}>
-                  <Avatar src={(conversation as any)?.avatar} />
+                  <Avatar src={(conversation as any)?.avatar} variant="rounded"  style={{ width: '60px', height: '60px' }}/>
                   <Box>
                   <Typography variant="overline" fontWeight={800}>
                     {(conversation as any)?.name}
