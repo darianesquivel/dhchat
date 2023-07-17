@@ -54,11 +54,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   };
 
   const handleCancel = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
     setSelectedImage(null);
     setSuccessMessage('');
     setUploadError('');
     toggleImageUpload(false);
+    event.preventDefault();
   };
 
   return (
