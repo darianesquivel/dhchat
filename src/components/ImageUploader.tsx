@@ -1,6 +1,6 @@
-import React, { useState, ChangeEvent, MouseEvent } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import { getStorage, ref, uploadBytes } from 'firebase/storage';
-import { Box, Button, Chip, Divider } from '@mui/material';
+import { Box, Button, Chip } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 
 interface ImageUploaderProps {
@@ -36,6 +36,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           await uploadBytes(storageRef, selectedImage);
           setSuccessMessage('Image uploaded successfully');
           setIsUploadInProgress(false);
+          setSelectedImage(null); 
         } catch (error) {
           setUploadError('Error loading image');
           setIsUploadInProgress(false);
@@ -53,12 +54,15 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     setUploadError('');
   };
 
-  const handleCancel = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleCancel = (): void => {
     setSelectedImage(null);
     setSuccessMessage('');
     setUploadError('');
     toggleImageUpload(false);
-    event.preventDefault();
+  };
+
+  const handleFormClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
   };
 
   return (
@@ -71,9 +75,9 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         width: 'auto',
         fontSize: '13px',
       }}
+      onClick={handleFormClick}
     >
       <input type="file" onChange={handleImageChange} accept="image/*" />
-      {/* <Divider orientation="vertical" flexItem /> */}
       {uploadError && (
         <Chip
           color="error"
@@ -84,6 +88,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             fontSize: 12,
             padding: '14px',
             color: 'white',
+            marginLeft: "15px"
           }}
         />
       )}
@@ -91,7 +96,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         <Button
           variant="contained"
           color="success"
-          style={{ width: '100px', fontSize: 10, margin: 5, borderRadius: 15 }}
+          style={{ width: '100px', fontSize: 10, margin: 5, borderRadius: 15, marginLeft: "15px" }}
           onClick={handleImageUpload}
           size="small"
           disabled={isUploadInProgress}
@@ -109,6 +114,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             fontSize: 12,
             padding: '14px',
             color: 'white',
+            marginLeft: "15px",
+            marginRight: "5px",
           }}
         />
       )}
