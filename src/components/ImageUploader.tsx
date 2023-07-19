@@ -1,16 +1,20 @@
 import React, { useState, ChangeEvent } from 'react';
-import { getStorage, ref, uploadBytes } from 'firebase/storage';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { Box, Button, Chip } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 
 interface ImageUploaderProps {
   showImageUpload: boolean;
   toggleImageUpload: (newValue: boolean) => void; 
+  setUploadedImageUrl: (imageUrl: string) => void;
+  handleSubmit: () => void;
 }
 
 const ImageUploader: React.FC<ImageUploaderProps> = ({
   showImageUpload,
-  toggleImageUpload
+  toggleImageUpload,
+  setUploadedImageUrl,
+  handleSubmit,
 }) => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [isUploadInProgress, setIsUploadInProgress] = useState<boolean>(false);
@@ -37,8 +41,13 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           setSuccessMessage('Image uploaded successfully');
           setIsUploadInProgress(false);
           setSelectedImage(null); 
+
+          const uploadedImageUrl = await getDownloadURL(storageRef);
+          setUploadedImageUrl(uploadedImageUrl);
+          handleSubmit();
         } catch (error) {
           setUploadError('Error loading image');
+        } finally {
           setIsUploadInProgress(false);
         }
       } else {
@@ -54,13 +63,14 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     setUploadError('');
   };
 
-  const handleCancel = (): void => {
+  const handleCancel = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
+    event.preventDefault(); 
     setSelectedImage(null);
     setSuccessMessage('');
     setUploadError('');
     toggleImageUpload(false);
   };
-
+  
   const handleFormClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
   };
