@@ -435,7 +435,7 @@ export default function Home() {
                   sx={{
                     display: "flex",
                     position: "absolute",
-                    marginTop: "240px",
+                    marginTop: "336px",
                   }}
                   ref={emojiContainerRef}
                   >     
