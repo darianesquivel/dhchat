@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent } from 'react';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import { Box, Button, Chip } from '@mui/material';
+import { Box, Button, Chip, Tooltip } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
 import { v4 as uuidv4 } from 'uuid';
 
 interface ImageUploaderProps {
@@ -87,6 +88,9 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       }}
       onClick={handleFormClick}
     >
+      <Tooltip title="Supports images in JPEG, PNG, WEBP, GIF, AVIF and TIFF formats." placement="top">
+        <InfoIcon sx={{marginBottom: "-8px", marginRight: "6px", color: 'white'}} />
+      </Tooltip>
       <input type="file" onChange={handleImageChange} accept="image/*" />
       {uploadError && (
         <Chip
@@ -137,7 +141,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         size="small"
       >
         Cancel
-      </Button>
+      </Button> 
     </Box>
   );
 };
