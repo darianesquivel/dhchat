@@ -44,6 +44,7 @@ export default function Home() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [showEmoji, setShowEmoji] = useState(false);
   const [showImageUpload, setShowImageUpload] = useState(false);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState("");
   const formContainerRef = useRef<HTMLDivElement>(null);
   const emojiContainerRef = useRef<HTMLDivElement>(null);
 
@@ -198,76 +199,64 @@ export default function Home() {
     try {
       if (newMessage === "") return;
       if (messagesRef) {
-        addDoc(messagesRef, {
-          content: {
-            text: newMessage,
-          },
-          sendAt: serverTimestamp(),
-          sendBy: user?.uid,
-          avatar: user?.photoURL,
-          user: user?.displayName,
-          type: "text",
-        });
-
-        const conversationRef = doc(
-          collection(db, "conversations"),
-          conversationId
-        );
-
-        updateDoc(conversationRef, {
-          lastMessage: newMessage,
-          lastMessageSendBy: user?.displayName,
-        });
-
-        setNewMessage("");
+        if (uploadedImageUrl) {
+          const messageData = {
+            content: {
+              text: newMessage,
+              image: uploadedImageUrl
+            },
+            sendAt: serverTimestamp(),
+            sendBy: user?.uid,
+            avatar: user?.photoURL,
+            user: user?.displayName,
+            type: "image"
+          };
+  
+          addDoc(messagesRef, messageData);
+  
+          const conversationRef = doc(
+            collection(db, "conversations"),
+            conversationId
+          );
+  
+          updateDoc(conversationRef, {
+            lastMessage: newMessage,
+            lastMessageSendBy: user?.displayName,
+          });
+  
+          setNewMessage("");
+          setUploadedImageUrl("");
+        } else {
+          const messageData = {
+            content: {
+              text: newMessage
+            },
+            sendAt: serverTimestamp(),
+            sendBy: user?.uid,
+            avatar: user?.photoURL,
+            user: user?.displayName,
+            type: "text"
+          };
+  
+          addDoc(messagesRef, messageData);
+  
+          const conversationRef = doc(
+            collection(db, "conversations"),
+            conversationId
+          );
+  
+          updateDoc(conversationRef, {
+            lastMessage: newMessage,
+            lastMessageSendBy: user?.displayName,
+          });
+  
+          setNewMessage("");
+        }
       }
     } catch (error) {
       console.error(error);
     }
   };
-
-  // const handleSubmit = async () => {
-  //   try {
-  //     if (newMessage === "") return;
-  //     if (messagesRef) {
-  //       const messageData = {
-  //         content: {
-  //           text: newMessage,
-  //         },
-  //         sendAt: serverTimestamp(),
-  //         sendBy: user?.uid,
-  //         avatar: user?.photoURL,
-  //         user: user?.displayName,
-  //         type: "text",
-  //       };
-  
-  //       if (selectedImage) {
-  //         const storage = getStorage();
-  //         const storageRef = ref(storage, selectedImage.name);
-  //         await uploadBytes(storageRef, selectedImage);
-  //         const downloadURL = await getDownloadURL(storageRef);
-  //         messageData.content.imageURL = downloadURL;
-  //       }
-  
-  //       addDoc(messagesRef, messageData);
-  
-  //       const conversationRef = doc(
-  //         collection(db, "conversations"),
-  //         conversationId
-  //       );
-  
-  //       updateDoc(conversationRef, {
-  //         lastMessage: newMessage,
-  //         lastMessageSendBy: user?.displayName,
-  //       });
-  
-  //       setNewMessage("");
-  //       setSelectedImage(null);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
 
   const scrollToBottom = () => {
     if (messagesEndRef.current && messagesEndRef.current.scrollIntoView) {
@@ -405,25 +394,41 @@ export default function Home() {
                   }}
                 >
                   {messages?.map((message: any, key) => {
-                    const { content, avatar, user, translatedContent, sendBy, sendAt } =
+                    const { content, avatar, user, translatedContent, sendBy, sendAt, type } =
                       message;
-                    return (
-                      <Message
-                        key={key}
-                        content={content.text}
-                        avatar={avatar}
-                        name={user}
-                        translatedContent={translatedContent?.text}
-                        userId={sendBy}
-                        lenguage={lenguage}
-                        sendAt={sendAt}
-                        translateMe={translateMe}
 
-                      />
-                    );
+                    if (type === "image") {
+                      return (
+                        <Message
+                          key={key}
+                          content={content.image}
+                          avatar={avatar}
+                          name={user}
+                          userId={sendBy}
+                          sendAt={sendAt}
+                          lenguage={lenguage}
+                          handleSubmit={handleSubmit}                        
+                        />
+                      );
+                    } else {
+                      return (
+                        <Message
+                          key={key}
+                          content={content.text}
+                          avatar={avatar}
+                          name={user}
+                          translatedContent={translatedContent?.text}
+                          userId={sendBy}
+                          sendAt={sendAt}
+                          lenguage={lenguage}
+                          translateMe={translateMe} 
+                          handleSubmit={handleSubmit}                        
+                        />
+                      );
+                    }
                   })}
-                
-                <div ref={messagesEndRef} />
+                  <div ref={messagesEndRef} />
+                </Box>
 
                 {showEmoji && (
                   <Box
@@ -443,8 +448,7 @@ export default function Home() {
                     //locale={en}
                   />
                   </Box>
-                  )}
-                </Box>
+                )}
 
                 {showImageUpload && (
                 <Box
@@ -460,6 +464,8 @@ export default function Home() {
                   <ImageUploader 
                     showImageUpload={showImageUpload}
                     toggleImageUpload={toggleImageUpload as () => void}
+                    setUploadedImageUrl={setUploadedImageUrl}
+                    handleSubmit={handleSubmit}
                   />
                 </Box>
               )}
