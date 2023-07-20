@@ -80,9 +80,9 @@ export default function Message({
               </Typography>
               {isImageMessage && (
                 <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
-                  {isImageURL(content) ? (
+                  {isImageURL(content) ? ( 
                     <img
-                      src={content}
+                      src={content.replace(/(\.[^.]+)$/, '_250x250$1')}
                       alt=""
                       style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
                       onLoad={handleImageLoaded}
