@@ -150,7 +150,7 @@ export default function CustomDrawer() {
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' , backgroundColor: '#A8CF45',}}>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#A8CF45', }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -158,7 +158,7 @@ export default function CustomDrawer() {
             edge="start"
             sx={{
               marginRight: 5,
-              ...(open && {visibility:'hidden' }),
+              ...(open && { visibility: 'hidden' }),
             }}
           >
             <MenuIcon />
@@ -169,9 +169,9 @@ export default function CustomDrawer() {
               edge="end">
               <Avatar alt="Remy Sharp" src={user?.photoURL} />
             </IconButton>
-            
+
             <Menu
-              sx={{ mt: '45px'}}
+              sx={{ mt: '45px' }}
               id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
@@ -253,39 +253,37 @@ export default function CustomDrawer() {
             </ListItem>
           ))}
           <ListItem key={'Profile'} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+              }}
+              onClick={handleOpenProfile}
+            >
+              <ListItemIcon
                 sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
                 }}
-                onClick={handleOpenProfile}
               >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Person2Icon /> 
-                 
-                </ListItemIcon>
-                <ListItemText primary={'Profile'} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
+                <Person2Icon />
+
+              </ListItemIcon>
+              <ListItemText primary={'Profile'} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 1, backgroundColor: "#f1f1f1" }}>
         <DrawerHeader />
         <Home />
         <Dialog
-        //fullScreen
-        open={openProfile}
-        onClose={handleCloseProfile}
-        TransitionComponent={Transition}
-      >
-          <Profile onClose={handleCloseProfile}/>
+          open={openProfile}
+          TransitionComponent={Transition}
+        >
+          <Profile onClose={handleCloseProfile} />
         </Dialog>
       </Box>
     </Box>
