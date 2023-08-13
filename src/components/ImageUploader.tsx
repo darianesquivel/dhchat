@@ -1,34 +1,51 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, useEffect } from 'react';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import { Box, Button, Chip, Tooltip } from '@mui/material';
+import { Box, Button, Tooltip } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import { v4 as uuidv4 } from 'uuid';
-
+import SendIcon from "@mui/icons-material/Send";
 interface ImageUploaderProps {
   showImageUpload: boolean;
-  toggleImageUpload: (newValue: boolean) => void; 
-  setUploadedImageUrl: (imageUrl: string) => void;
+  toggleImageUpload: (newValue: boolean) => void;
   handleSubmit: () => void;
+  setNewMessage: (message: any) => void;
+  setShowImageUpload:(value:boolean) => void;
 }
 
 const ImageUploader: React.FC<ImageUploaderProps> = ({
-  showImageUpload,
-  toggleImageUpload,
-  setUploadedImageUrl,
   handleSubmit,
+  setNewMessage,
+  setShowImageUpload
 }) => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [isUploadInProgress, setIsUploadInProgress] = useState<boolean>(false);
-  const [successMessage, setSuccessMessage] = useState<string>('');
-  const [uploadError, setUploadError] = useState<string>('');
+  const [previewImage, setPreviewImage] = useState('')
+  const [previewView, setPreviewView] = useState(false)
 
-  const handleImageUpload = async (): Promise<void> => {
-    if (selectedImage) {
-      if (selectedImage.size <= 1 * 1024 * 1024) {
-        setIsUploadInProgress(true);
-        setSuccessMessage('');
-        setUploadError('');
 
+    const handleImageChange = async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
+      const file = event.target.files && event.target.files[0];
+      setSelectedImage(file)
+    };
+  
+  
+
+  const handleCancel = () => {
+    setSelectedImage(null)
+    setPreviewView(false)
+    setNewMessage('')
+
+  };
+
+  const handleSubmitImage = () => {
+    handleSubmit()
+    setPreviewView(false)
+    setNewMessage('')
+    setShowImageUpload(false)
+    }
+
+  useEffect(() => {
+    const uploadImage = async () => {
+      if (selectedImage) {
         const storage = getStorage();
 
         const token = uuidv4();
@@ -39,109 +56,71 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 
         try {
           await uploadBytes(storageRef, selectedImage);
-          setSuccessMessage('Image uploaded successfully');
-          setIsUploadInProgress(false);
-          setSelectedImage(null); 
+          setPreviewView(true)
+          setSelectedImage(null);
 
           const uploadedImageUrl = await getDownloadURL(storageRef);
-          setUploadedImageUrl(uploadedImageUrl);
-          handleSubmit();
+          setPreviewImage(uploadedImageUrl)
+          setNewMessage(uploadedImageUrl)
+
         } catch (error) {
-          setUploadError('Error loading image');
-        } finally {
-          setIsUploadInProgress(false);
+          console.error(error)
         }
-      } else {
-        setUploadError('The image size cannot be larger than 1 MB');
       }
     }
-  };
-
-  const handleImageChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    const file = event.target.files && event.target.files[0];
-    setSelectedImage(file || null);
-    setSuccessMessage('');
-    setUploadError('');
-  };
-
-  const handleCancel = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
-    event.preventDefault(); 
-    setSelectedImage(null);
-    setSuccessMessage('');
-    setUploadError('');
-    toggleImageUpload(false);
-  };
-  
-  const handleFormClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation();
-  };
+    uploadImage()
+    // eslint-disable-next-line
+  }, [selectedImage])
 
   return (
     <Box
-      sx={{
+      sx={!previewView ? {
         borderRadius: 2,
         padding: '10px',
         backgroundColor: '#A8CF45',
         boxShadow: '1px 1px 2px rgba(0, 0, 0, 0.15)',
         width: 'auto',
         fontSize: '13px',
+      } : {
+        borderRadius: 2,
+        padding: '10px',
+        backgroundColor: 'white',
+        boxShadow: '1px 1px 2px rgba(0, 0, 0, 0.15)',
+        width: 'auto',
+        fontSize: '13px',
       }}
-      onClick={handleFormClick}
     >
-      <Tooltip title="Supports images in JPEG, PNG, WEBP, GIF, AVIF and TIFF formats." placement="top">
-        <InfoIcon sx={{marginBottom: "-8px", marginRight: "6px", color: 'white'}} />
-      </Tooltip>
-      <input type="file" onChange={handleImageChange} accept="image/*" />
-      {uploadError && (
-        <Chip
-          color="error"
-          size="small"
-          label={uploadError}
-          sx={{
-            width: 'auto',
-            fontSize: 12,
-            padding: '14px',
-            color: 'white',
-            marginLeft: "15px"
-          }}
-        />
+      {
+        !previewView ?
+            <Box sx={{ height: '300px', objectFit: 'contain' }}>
+            <Tooltip title="Supports images in JPEG, PNG, WEBP, GIF, AVIF and TIFF formats." placement="top">
+              <InfoIcon sx={{color: 'white' }} />
+            </Tooltip>
+            <input type="file" onChange={handleImageChange} accept="image/*" />
+            </Box>
+           :
+          null
+      }
+      {previewView && (
+        <Box>
+          <img src={previewImage} alt="" style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }} />
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+            <Button sx={{ borderRadius: 10 }} color='error' variant='outlined' onClick={handleCancel}>Cancel</Button>
+            <Button
+              sx={{ borderRadius: 10 }}
+              variant="contained"
+              color="success"
+              style={{ width: "10%" }}
+              onClick={handleSubmitImage}
+              startIcon={<SendIcon style={{ marginLeft: "10px" }} />}
+              size="small"
+            >
+            </Button>
+          </Box>
+
+        </Box>
+
       )}
-      {!uploadError && !successMessage && (
-        <Button
-          variant="contained"
-          color="success"
-          style={{ width: '100px', fontSize: 10, margin: 5, borderRadius: 15, marginLeft: "15px" }}
-          onClick={handleImageUpload}
-          size="small"
-          disabled={isUploadInProgress}
-        >
-          Upload image
-        </Button>
-      )}
-      {successMessage && (
-        <Chip
-          color="warning"
-          size="small"
-          label={successMessage}
-          sx={{
-            width: 'auto',
-            fontSize: 12,
-            padding: '14px',
-            color: 'white',
-            marginLeft: "15px",
-            marginRight: "5px",
-          }}
-        />
-      )}
-      <Button
-        variant="contained"
-        color="success"
-        style={{ width: '100px', fontSize: 10, margin: 5, borderRadius: 15 }}
-        onClick={handleCancel}
-        size="small"
-      >
-        Cancel
-      </Button> 
     </Box>
   );
 };

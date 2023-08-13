@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, TextField, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Menu, TextField, Tooltip, Typography } from "@mui/material";
 import { UserAuth } from "../context/AuthContext";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -18,7 +18,6 @@ import { db } from "../api/Config/firebase";
 import Message from "../components/Message";
 import SendIcon from "@mui/icons-material/Send";
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
 import bg_light from "../assets/images/bg_light.png";
 import logo from '../assets/images/logo.png'
 import Chat from "../components/Chat";
@@ -28,23 +27,22 @@ import Picker from "@emoji-mart/react";
 import ImageUploader from '../components/ImageUploader';
 import AddIcon from '@mui/icons-material/Add';
 import ListAvatar from "../components/ListAvatar";
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
 
 export default function Home() {
   const { user } = UserAuth();
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const conversationsRef = collection(db, "conversations");
-  // const userRef = collection(db, "users");
   const [conversations, setConversations] = useState([]);
   const [conversation, setConversation] = useState();
   const [conversationId, setConversationId] = useState("");
   const [displayMessages, setDisplayMessages] = useState(false);
   const [lenguage, setLenguage] = useState("en");
-  const [translateMe , setTranslateMe] = useState(false)
+  const [translateMe, setTranslateMe] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [showEmoji, setShowEmoji] = useState(false);
   const [showImageUpload, setShowImageUpload] = useState(false);
-  const [uploadedImageUrl, setUploadedImageUrl] = useState("");
   const formContainerRef = useRef<HTMLDivElement>(null);
   const emojiContainerRef = useRef<HTMLDivElement>(null);
 
@@ -59,7 +57,7 @@ export default function Home() {
     setShowImageUpload(!showImageUpload);
     setShowEmoji(false);
   };
-  
+
   const [chatName, setChatName] = useState('')
   const [avatar, setAvatar] = useState('')
   const [users, setUsers] = useState([])
@@ -82,7 +80,7 @@ export default function Home() {
       participants
     };
 
-    await addDoc(conversationsRef,newConversation);
+    await addDoc(conversationsRef, newConversation);
     setOpen(false);
 
   }
@@ -113,9 +111,9 @@ export default function Home() {
         setShowEmoji(false);
       }
     };
-  
+
     document.addEventListener('click', handleClickOutside);
-  
+
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
@@ -127,7 +125,7 @@ export default function Home() {
       (snapshot) => {
         let conversations: any = [];
         snapshot.forEach((doc) => {
-          if(doc.data().participants?.includes(user?.email) || doc.data().participants?.includes("open-group") ){
+          if (doc.data().participants?.includes(user?.email) || doc.data().participants?.includes("open-group")) {
             conversations.push({ ...doc.data(), id: doc.id });
           }
         });
@@ -138,12 +136,12 @@ export default function Home() {
     const fetchUsers = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, 'users'));
-        const userData:any = querySnapshot.docs.map((doc) => ({
+        const userData: any = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data()
         }));
-  
-        const filteredUsers = userData.filter((u:any) => u.email !== user?.email);
+
+        const filteredUsers = userData.filter((u: any) => u.email !== user?.email);
         setUsers(filteredUsers);
       } catch (error) {
         console.error(error);
@@ -154,8 +152,8 @@ export default function Home() {
       getConversations();
       fetchUsers()
     };
+    // eslint-disable-next-line
   }, []);
-  
 
   useEffect(() => {
     scrollToBottom();
@@ -195,63 +193,36 @@ export default function Home() {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (messageType = 'text') => {
     try {
       if (newMessage === "") return;
       if (messagesRef) {
-        if (uploadedImageUrl) {
-          const messageData = {
-            content: {
-              text: newMessage,
-              image: uploadedImageUrl
-            },
-            sendAt: serverTimestamp(),
-            sendBy: user?.uid,
-            avatar: user?.photoURL,
-            user: user?.displayName,
-            type: "image"
-          };
-  
-          addDoc(messagesRef, messageData);
-  
-          const conversationRef = doc(
-            collection(db, "conversations"),
-            conversationId
-          );
-  
-          updateDoc(conversationRef, {
-            lastMessage: newMessage,
-            lastMessageSendBy: user?.displayName,
-          });
-  
-          setNewMessage("");
-          setUploadedImageUrl("");
-        } else {
-          const messageData = {
-            content: {
-              text: newMessage
-            },
-            sendAt: serverTimestamp(),
-            sendBy: user?.uid,
-            avatar: user?.photoURL,
-            user: user?.displayName,
-            type: "text"
-          };
-  
-          addDoc(messagesRef, messageData);
-  
-          const conversationRef = doc(
-            collection(db, "conversations"),
-            conversationId
-          );
-  
-          updateDoc(conversationRef, {
-            lastMessage: newMessage,
-            lastMessageSendBy: user?.displayName,
-          });
-  
-          setNewMessage("");
-        }
+        const messageData = {
+          content: {
+            text: messageType === 'text' ? newMessage : '',
+            imageUrl: messageType === 'image' ? newMessage : '',
+          },
+          sendAt: serverTimestamp(),
+          sendBy: user?.uid,
+          avatar: user?.photoURL,
+          user: user?.displayName,
+          type: messageType
+        };
+
+        addDoc(messagesRef, messageData);
+
+        const conversationRef = doc(
+          collection(db, "conversations"),
+          conversationId
+        );
+
+        updateDoc(conversationRef, {
+          lastMessage: messageType === 'text' ? newMessage : 'image',
+          lastMessageSendBy: user?.displayName,
+        });
+
+        setNewMessage("");
+
       }
     } catch (error) {
       console.error(error);
@@ -296,34 +267,34 @@ export default function Home() {
           }}
         >
           <img width="100px" src={logo} alt="logo" />
-          <Divider orientation="horizontal" flexItem sx={{marginTop:"20px", marginBottom:"5px"}}/>
+          <Divider orientation="horizontal" flexItem sx={{ marginTop: "20px", marginBottom: "5px" }} />
 
-          <Box sx={{display:'flex',alignItems:'center', gap:1}}>
-          <Typography variant="button" fontWeight={600}>
-            Chats
-          </Typography>
-          <IconButton onClick={handleClickOpen}><AddIcon fontSize="small"/></IconButton>
-          <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-         Add new chat
-        </DialogTitle>
-        <DialogContent>
-        <TextField onChange={(e)=> setChatName(e.target.value)} id="outlined-basic" label="Name" variant="outlined" />
-        <TextField onChange={(e)=> setAvatar(e.target.value)} id="outlined-basic" label="Avatar" variant="outlined" />
-        <ListAvatar users = {users} onAddParticipants = {setParticipants} currentUser = {user?.email}/>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmitNewChat} autoFocus>
-            Add
-          </Button>
-        </DialogActions>
-      </Dialog>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography variant="button" fontWeight={600}>
+              Chats
+            </Typography>
+            <IconButton onClick={handleClickOpen}><AddIcon fontSize="small" /></IconButton>
+            <Dialog
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">
+                Add new chat
+              </DialogTitle>
+              <DialogContent>
+                <TextField onChange={(e) => setChatName(e.target.value)} id="outlined-basic" label="Name" variant="outlined" />
+                <TextField onChange={(e) => setAvatar(e.target.value)} id="outlined-basic" label="Avatar" variant="outlined" />
+                <ListAvatar users={users} onAddParticipants={setParticipants} currentUser={user?.email} />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleSubmitNewChat} autoFocus>
+                  Add
+                </Button>
+              </DialogActions>
+            </Dialog>
           </Box>
 
           {conversations?.map((conversation: any, key) => {
@@ -349,7 +320,7 @@ export default function Home() {
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
-            backgroundImage:  `url(${bg_light})`,
+            backgroundImage: `url(${bg_light})`,
             backgroundSize: "contain",
             backgroundColor: "white",
           }}
@@ -366,146 +337,115 @@ export default function Home() {
                 }}
               >
                 <Box sx={{ display: "flex", gap: 2, p: 1 }}>
-                  <Avatar src={(conversation as any)?.avatar} variant="rounded"  style={{ width: '60px', height: '60px' }}/>
+                  <Avatar src={(conversation as any)?.avatar} variant="rounded" style={{ width: '60px', height: '60px' }} />
                   <Box>
-                  <Typography variant="overline" fontWeight={800}>
-                    {(conversation as any)?.name}
-                  </Typography>
-                  <Box sx={{display:'flex',gap:1}}>
-                  {(conversation as any)?.participants.map((e:any)=><Chip sx={{fontSize:10}} size="small" label={e}/>)} 
+                    <Typography variant="overline" fontWeight={800}>
+                      {(conversation as any)?.name}
+                    </Typography>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      {(conversation as any)?.participants.map((e: any) => <Chip sx={{ fontSize: 10 }} size="small" label={e} />)}
+                    </Box>
+
+
                   </Box>
 
-                 
-                  </Box>
-                
                 </Box>
                 <CustomSelected setLenguage={setLenguage} setTranslateMe={setTranslateMe} />
-                </Box>
-                
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    height: "90%",
-                    borderRadius: 2,
-                    p: 1,
-                    overflow: "auto",
-                    mb: 1,
-                  }}
+              </Box>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "90%",
+                  borderRadius: 2,
+                  p: 1,
+                  overflow: "auto",
+                  mb: 1,
+                }}
+              >
+                {messages?.map((message: any, key) => {
+                  const { content, avatar, user, translatedContent, sendBy, sendAt, type } =
+                    message;
+
+                  return (
+                    <Message
+                      key={key}
+                      content={content}
+                      avatar={avatar}
+                      name={user}
+                      translatedContent={translatedContent?.text}
+                      userId={sendBy}
+                      sendAt={sendAt}
+                      lenguage={lenguage}
+                      translateMe={translateMe}
+                      type={type}
+                    />
+                  );
+
+                })}
+                <div ref={messagesEndRef} />
+              </Box>
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  gap: 1,
+                  p: 1,
+                  backgroundColor: "#A8CF45",
+                  borderRadius: 2,
+                }}
+              >
+
+                <Tooltip title="Emojis" placement="top">
+                  <Button
+                    sx={{ borderRadius: 10 }}
+                    variant="contained"
+                    color="success"
+                    style={{ width: "10px" }}
+                    onClick={(event) => toggleShowEmoji(event)}
+                    startIcon={<EmojiEmotionsIcon style={{ marginLeft: "10px" }} />}
+                    size="small"
+                  />
+                </Tooltip>
+                <Menu
+                  sx={{ display: 'flex' }}
+                  open={showEmoji}
+                  onClose={() => setShowEmoji(false)}
                 >
-                  {messages?.map((message: any, key) => {
-                    const { content, avatar, user, translatedContent, sendBy, sendAt, type } =
-                      message;
-
-                    if (type === "image") {
-                      return (
-                        <Message
-                          key={key}
-                          content={content.image}
-                          avatar={avatar}
-                          name={user}
-                          userId={sendBy}
-                          sendAt={sendAt}
-                          lenguage={lenguage}
-                          handleSubmit={handleSubmit}                        
-                        />
-                      );
-                    } else {
-                      return (
-                        <Message
-                          key={key}
-                          content={content.text}
-                          avatar={avatar}
-                          name={user}
-                          translatedContent={translatedContent?.text}
-                          userId={sendBy}
-                          sendAt={sendAt}
-                          lenguage={lenguage}
-                          translateMe={translateMe} 
-                          handleSubmit={handleSubmit}                        
-                        />
-                      );
-                    }
-                  })}
-                  <div ref={messagesEndRef} />
-                </Box>
-
-                {showEmoji && (
-                  <Box
-                  sx={{
-                    display: "flex",
-                    position: "absolute",
-                    marginTop: "336px",
-                  }}
-                  ref={emojiContainerRef}
-                  >     
                   <Picker
                     data={data}
                     emojiSize={24}
                     emojiButtonSize={36}
                     onEmojiSelect={addEmoji}
                     maxFrequentRows={0}
-                    //locale={en}
                   />
-                  </Box>
-                )}
-
-                {showImageUpload && (
-                <Box
-                sx={{
-                  display: "flex",
-                  position: "absolute",
-                  marginTop: "716px",
-                  //marginBottom: "15px",
-                  marginLeft: "80px",
-                }}
-                ref={formContainerRef}
-                >    
-                  <ImageUploader 
-                    showImageUpload={showImageUpload}
-                    toggleImageUpload={toggleImageUpload as () => void}
-                    setUploadedImageUrl={setUploadedImageUrl}
-                    handleSubmit={handleSubmit}
-                  />
-                </Box>
-              )}
-
-                <Box
-                  sx={{
-                    width: "100%",
-                    display: "flex",
-                    gap: 1,
-                    p: 1,
-                    backgroundColor: "#A8CF45",
-                    borderRadius: 2,
-                  }}
-                >
-                <Tooltip title="Emojis" placement="top">
-                <Button
-                  sx={{ borderRadius: 10 }}
-                  variant="contained"
-                  color="success"
-                  style={{ width: "10px"}}
-                  onClick={(event) => toggleShowEmoji(event)}
-                  startIcon={<EmojiEmotionsIcon style={{ marginLeft: "10px" }}/>}
-                  size="large"
-                >
-                </Button>
-                </Tooltip>
+                </Menu>
 
                 <Tooltip title="Attach" placement="top">
-                <Button
-                  sx={{ borderRadius: 10 }}
-                  variant="contained"
-                  color="success"
-                  style={{ width: "10px"}}
-                  onClick={(event) => toggleImageUpload(event)}
-                  startIcon={<AttachFileIcon style={{ marginLeft: "10px" }}/>}
-                  size="large"
-                >
-                </Button>
+                  <Button
+                    sx={{ borderRadius: 10 }}
+                    variant="contained"
+                    color="success"
+                    style={{ width: "10px" }}
+                    onClick={(event) => toggleImageUpload(event)}
+                    startIcon={<CameraAltIcon style={{ marginLeft: "10px" }} />}
+                    size="small"
+                  />
                 </Tooltip>
-              
+                <Dialog
+                  open={showImageUpload}
+                  onClose={() => setShowImageUpload(false)}
+                >
+                  <ImageUploader
+                    showImageUpload={showImageUpload}
+                    toggleImageUpload={toggleImageUpload as () => void}
+                    setNewMessage={setNewMessage}
+                    setShowImageUpload={setShowImageUpload}
+                    handleSubmit={() => handleSubmit('image')}
+                  />
+                </Dialog>
+
                 <TextField
                   sx={{
                     backgroundColor: "white",
@@ -524,16 +464,16 @@ export default function Home() {
                 />
 
                 <Tooltip title="Send" placement="top">
-                <Button
-                  sx={{ borderRadius: 10 }}
-                  variant="contained"
-                  color="success"
-                  style={{ width: "10%" }}
-                  onClick={handleSubmit}
-                  startIcon={<SendIcon style={{ marginLeft: "10px" }} />}
-                  size="large"
-                >
-                </Button>
+                  <Button
+                    sx={{ borderRadius: 10 }}
+                    variant="contained"
+                    color="success"
+                    style={{ width: "10%" }}
+                    onClick={() => handleSubmit()}
+                    startIcon={<SendIcon style={{ marginLeft: "10px" }} />}
+                    size="small"
+                  >
+                  </Button>
                 </Tooltip>
               </Box>
             </>
@@ -545,7 +485,7 @@ export default function Home() {
               }}
             >
               <Typography variant="button" fontWeight={600}>
-             Select a chat
+                Select a chat
               </Typography>
             </Box>
           )}
