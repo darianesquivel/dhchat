@@ -199,7 +199,8 @@ export default function Home() {
       if (messagesRef) {
         const messageData = {
           content: {
-            text: newMessage
+            text: messageType === 'text' ? newMessage : '',
+            imageUrl: messageType === 'image' ? newMessage : '',
           },
           sendAt: serverTimestamp(),
           sendBy: user?.uid,
@@ -216,7 +217,7 @@ export default function Home() {
         );
 
         updateDoc(conversationRef, {
-          lastMessage: newMessage,
+          lastMessage: messageType === 'text' ? newMessage : 'image',
           lastMessageSendBy: user?.displayName,
         });
 
@@ -370,7 +371,7 @@ export default function Home() {
                   return (
                     <Message
                       key={key}
-                      content={content.text}
+                      content={content}
                       avatar={avatar}
                       name={user}
                       translatedContent={translatedContent?.text}
@@ -440,7 +441,7 @@ export default function Home() {
                     showImageUpload={showImageUpload}
                     toggleImageUpload={toggleImageUpload as () => void}
                     setNewMessage={setNewMessage}
-                    setShowImageUpload = {setShowImageUpload}
+                    setShowImageUpload={setShowImageUpload}
                     handleSubmit={() => handleSubmit('image')}
                   />
                 </Dialog>

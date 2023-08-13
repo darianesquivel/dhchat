@@ -3,7 +3,10 @@ import moment from 'moment';
 import { UserAuth } from "../context/AuthContext";
 
 interface MessageProps {
-  content: string;
+  content: {
+    text: string;
+    imageUrl: string;
+  };
   avatar: string;
   name: string;
   userId: string;
@@ -28,7 +31,7 @@ interface MessageProps {
   };
   showTranslateMe?: boolean;
   translateMe?: boolean;
-  type: string
+  type: string;
 }
 
 export default function Message({
@@ -82,29 +85,45 @@ export default function Message({
                   transform: 'translateX(-50%)',
                 }}
               />
+              {
+                type === 'image' ?
+                  <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
+                    <img
+                      src={content?.imageUrl?.replace(/(\.[^.]+)$/, '_250x250$1')}
+                      alt=""
+                      style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
+                    />
+
+                  </Box> :
+                  <Typography variant="caption" sx={{ fontSize: "14px" }}>{content.text}</Typography>
+              }
             </Box>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5, p: 0.5 }}>
-              <Typography
-                sx={{
-                  display: "flex",
-                  gap: 1,
-                  borderRadius: 3,
-                  p: 0.5,
-                  alignItems: "center",
-                  background: "#f1f7e1",
-                  fontSize: "14px",
-                  marginLeft: "-36px",
-                }}
-                variant="caption"
-              >
-                <Chip color="success" size="small" label={lenguage} sx={{ width: '35px' }} />
-                {translatedContent?.[lenguage as keyof typeof translatedContent] ? (
-                  translatedContent[lenguage as keyof typeof translatedContent]
-                ) : (
-                  <Skeleton width={40} />
-                )}
-              </Typography>
-            </Box>
+            {
+              content.text ?
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5, p: 0.5 }}>
+                  <Typography
+                    sx={{
+                      display: "flex",
+                      gap: 1,
+                      borderRadius: 3,
+                      p: 0.5,
+                      alignItems: "center",
+                      background: "#f1f7e1",
+                      fontSize: "14px",
+                      marginLeft: "-36px",
+                    }}
+                    variant="caption"
+                  >
+                    <Chip color="success" size="small" label={lenguage} sx={{ width: '35px' }} />
+                    {translatedContent?.[lenguage as keyof typeof translatedContent] ? (
+                      translatedContent[lenguage as keyof typeof translatedContent]
+                    ) : (
+                      <Skeleton width={40} />
+                    )}
+                  </Typography>
+                </Box> : null
+            }
+
           </Box>
         </Box>
       ) : (
@@ -143,13 +162,13 @@ export default function Message({
                 type === 'image' ?
                   <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
                     <img
-                      src={content.replace(/(\.[^.]+)$/, '_250x250$1')}
+                      src={content.imageUrl.replace(/(\.[^.]+)$/, '_250x250$1')}
                       alt=""
                       style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
                     />
 
                   </Box> :
-                  <Typography variant="caption" sx={{ fontSize: "14px" }}>{content}</Typography>
+                  <Typography variant="caption" sx={{ fontSize: "14px" }}>{content.text}</Typography>
               }
               <Box
                 sx={{
