@@ -324,7 +324,7 @@ export default function Home() {
             width: "15%",
             minWidth: "220px",
             borderRadius: 2,
-            p: 2,
+            p: 1,
             display: "flex",
             flexDirection: "column",
             gap: 0.5,
@@ -332,13 +332,15 @@ export default function Home() {
             alignItems: "center",
           }}
         >
-          <img width="140px" src={logo} alt="logo" />
-          <Divider orientation="horizontal" flexItem sx={{ marginTop: "15px", marginBottom: "3px" }} />
+          <Box sx={{ marginTop: 2}}><img width="140px" src={logo} alt="logo"/></Box>
+          <Divider orientation="horizontal" flexItem sx={{ marginTop: "10px", marginBottom: "3px" }} />
           <Box>
-            <IconButton onClick={handleOpenUserMenu}
-              edge="start">
-              <Avatar alt={user?.displayName} src={user?.photoURL} />
-            </IconButton>
+            <Tooltip title="User menu" placement="right-end">
+              <IconButton onClick={handleOpenUserMenu}
+                edge="start">
+                <Avatar alt={user?.displayName} src={user?.photoURL} />
+              </IconButton>
+            </Tooltip>
             {user?.displayName}
             <Menu
               sx={{ marginTop: 7, marginLeft: 6 }}
@@ -375,7 +377,7 @@ export default function Home() {
             </Menu>
           </Box>
           {/* <Divider orientation="horizontal" flexItem sx={{ marginTop: "3px", marginBottom: "3px" }} /> */}
-        <Accordion defaultExpanded sx={{width:'100%', backgroundColor:'#ffffff', marginTop: 2,}} >
+        <Accordion defaultExpanded sx={{width:'100%', backgroundColor:'#f8f8f8', marginTop: 0.5, boxShadow: 'none', border: 'none', }} >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="chats-content"
@@ -384,7 +386,7 @@ export default function Home() {
             <ChatIcon sx={{ marginRight: 1, color: "#A8CF45" }}/>
             <Typography variant="button" fontWeight={600}>Chats</Typography>
         </AccordionSummary>
-        <AccordionDetails  sx={{padding: 0}}>
+        <AccordionDetails  sx={{padding: 0, fontSize: 13 }}>
         <IconButton onClick={handleClickOpen} sx={{marginLeft: 0.5}}><AddIcon fontSize="small" /></IconButton>Add new chat
         {conversations?.map((conversation: any, key) => {
             const { lastMessage, avatar, name, id, lastMessageSendBy } =
@@ -405,7 +407,7 @@ export default function Home() {
           })}
         </AccordionDetails>
       </Accordion>
-      <Accordion sx={{width:'100%', backgroundColor:'#ffffff'}} >
+      <Accordion sx={{width:'100%', backgroundColor:'#f8f8f8', boxShadow: 'none', border: 'none', borderTopStyle: 'none'}} >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="contacts-content"
@@ -414,10 +416,11 @@ export default function Home() {
           <PermContactCalendarIcon sx={{ marginRight: 1, color: "#A8CF45" }}/>
           <Typography variant="button" fontWeight={600}>Contacts</Typography>
         </AccordionSummary>
-        <AccordionDetails  sx={{padding: 0}}>
-        <IconButton onClick={handleClickOpen} sx={{marginLeft: 0.5}}><AddIcon fontSize="small" /></IconButton>Add new contact
+        <AccordionDetails  sx={{padding: 0, fontSize: 13 }}>
+        <IconButton sx={{marginLeft: 0.5}}><AddIcon fontSize="small" /></IconButton>Add new contact
         </AccordionDetails>
       </Accordion>
+                {/* <Divider orientation="horizontal" flexItem sx={{ marginBottom: "3px" }} /> */}
             <Dialog
               open={open}
               onClose={handleClose}
@@ -615,13 +618,11 @@ export default function Home() {
                 alignItems: "center",
               }}
             >
-              <ArrowBackIcon sx={{marginRight: 1}}/>
-              <Typography variant="button" fontWeight={600}>
-                Select a chat
-              </Typography>
+              <Tooltip title='<-- Select a chat' placement="left" sx={{fontSize: "50px"}}>
               <Box sx={{marginLeft: 5}}>
-              <img src={SelectChat} alt="Select Chat" width={500} />
+              <img src={SelectChat} alt="Select Chat" width={450} />
               </Box>
+              </Tooltip>
             </Box>
           )}
         <Dialog
