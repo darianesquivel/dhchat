@@ -357,19 +357,19 @@ export default function Home() {
               onClose={handleCloseUserMenu}
             >
               <MenuItem onClick={handleOpenProfile}>
-                <PersonIcon fontSize="small"  sx={{marginRight: 2}}/>
+                <PersonIcon fontSize="small"  sx={{marginRight: 2, color: "#A8CF45" }}/>
                 <Typography textAlign="center">Profile</Typography>
               </MenuItem>
               <MenuItem>
-                <SettingsIcon fontSize="small"  sx={{marginRight: 2}}/>
+                <SettingsIcon fontSize="small"  sx={{marginRight: 2, color: "#A8CF45" }}/>
                 <Typography textAlign="center">Configuration</Typography>
               </MenuItem>
               <MenuItem >
-                <Brightness4Icon fontSize="small"  sx={{marginRight: 2}}/>
+                <Brightness4Icon fontSize="small"  sx={{marginRight: 2, color: "#A8CF45" }}/>
                 <Typography textAlign="center">Dark mode</Typography>
               </MenuItem>
               <MenuItem onClick={logOut}>
-                <LogoutIcon fontSize="small" sx={{marginRight: 2}}/>
+                <LogoutIcon fontSize="small" sx={{marginRight: 2, color: "#A8CF45" }}/>
                 <Typography textAlign="center">Logout</Typography>
               </MenuItem>
             </Menu>
@@ -381,12 +381,11 @@ export default function Home() {
           aria-controls="chats-content"
           id="chats-header"
         >
-            <ChatIcon sx={{marginTop: 0.5, marginRight: 1, color: "green" }}/>
-            <Typography variant="button" fontWeight={600}>Chats
-            <IconButton onClick={handleClickOpen} sx={{marginLeft: 0.5}}><AddIcon fontSize="small" /></IconButton>
-            </Typography>
+            <ChatIcon sx={{ marginRight: 1, color: "#A8CF45" }}/>
+            <Typography variant="button" fontWeight={600}>Chats</Typography>
         </AccordionSummary>
         <AccordionDetails  sx={{padding: 0}}>
+        <IconButton onClick={handleClickOpen} sx={{marginLeft: 0.5}}><AddIcon fontSize="small" /></IconButton>Add new chat
         {conversations?.map((conversation: any, key) => {
             const { lastMessage, avatar, name, id, lastMessageSendBy } =
               conversation;
@@ -412,12 +411,11 @@ export default function Home() {
           aria-controls="contacts-content"
           id="contacts-header"
         >
-          <PermContactCalendarIcon sx={{marginTop: 0.5, marginRight: 1, color: "green" }}/>
-          <Typography variant="button" fontWeight={600}>Contacts
-            <IconButton onClick={handleClickOpen} sx={{marginLeft: 0.5}}><AddIcon fontSize="small" /></IconButton>
-          </Typography>
+          <PermContactCalendarIcon sx={{ marginRight: 1, color: "#A8CF45" }}/>
+          <Typography variant="button" fontWeight={600}>Contacts</Typography>
         </AccordionSummary>
         <AccordionDetails  sx={{padding: 0}}>
+        <IconButton onClick={handleClickOpen} sx={{marginLeft: 0.5}}><AddIcon fontSize="small" /></IconButton>Add new contact
         </AccordionDetails>
       </Accordion>
             <Dialog
