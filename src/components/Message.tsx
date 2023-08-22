@@ -162,7 +162,7 @@ export default function Message({
                 type === 'image' ?
                   <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
                     <img
-                      src={content.imageUrl.replace(/(\.[^.]+)$/, '_250x250$1')}
+                      src={content?.imageUrl?.replace(/(\.[^.]+)$/, '_250x250$1')}
                       alt=""
                       style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
                     />

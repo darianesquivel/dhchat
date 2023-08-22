@@ -24,9 +24,9 @@ export default function CustomSelected({ setLenguage, setTranslateMe }: any) {
     <Box>
       <FormControl sx={{ m: 0, maxWidth: 150, alignItems: "center", }}>
         <FormHelperText>Translate me</FormHelperText>
-        <Switch size="medium" checked={showTranslateMe} onChange={handleSwitchChange} />
+        <Switch size="small" checked={showTranslateMe} onChange={handleSwitchChange} />
       </FormControl>
-      <FormControl sx={{ m: 0, maxWidth: 150 }}>
+      <FormControl sx={{ m: 0, maxWidth: 150, fontSize: 10, marginRight: 1 }}>
         <FormHelperText>Translate to</FormHelperText>
         <Select
           value={value}
@@ -34,19 +34,20 @@ export default function CustomSelected({ setLenguage, setTranslateMe }: any) {
           displayEmpty
           inputProps={{ "aria-label": "Translate to" }}
           size="small"
+          sx={{ fontSize: 12, maxHeight: 24, backgroundColor: "white" }}
         >
-          <MenuItem value={"ar"}>Arab</MenuItem>
-          <MenuItem value={"zh"}>Chinese</MenuItem>
-          <MenuItem value={"de"}>Deutsch</MenuItem>
-          <MenuItem value={"en"}>English</MenuItem>
-          <MenuItem value={"fr"}>French</MenuItem>
-          <MenuItem value={"hi"}>Hindi</MenuItem>
-          <MenuItem value={"it"}>Italian</MenuItem>
-          <MenuItem value={"ja"}>Japanese</MenuItem>
-          <MenuItem value={"pl"}>Polish</MenuItem>
-          <MenuItem value={"pt"}>Portuguese</MenuItem>
-          <MenuItem value={"ru"}>Russian</MenuItem>
-          <MenuItem value={"es"}>Spanish</MenuItem>
+          <MenuItem value={"ar"} sx={{ fontSize: 12 }}>Arab</MenuItem>
+          <MenuItem value={"zh"} sx={{ fontSize: 12 }}>Chinese</MenuItem>
+          <MenuItem value={"de"} sx={{ fontSize: 12 }}>Deutsch</MenuItem>
+          <MenuItem value={"en"} sx={{ fontSize: 12 }}>English</MenuItem>
+          <MenuItem value={"fr"} sx={{ fontSize: 12 }}>French</MenuItem>
+          <MenuItem value={"hi"} sx={{ fontSize: 12 }}>Hindi</MenuItem>
+          <MenuItem value={"it"} sx={{ fontSize: 12 }}>Italian</MenuItem>
+          <MenuItem value={"ja"} sx={{ fontSize: 12 }}>Japanese</MenuItem>
+          <MenuItem value={"pl"} sx={{ fontSize: 12 }}>Polish</MenuItem>
+          <MenuItem value={"pt"} sx={{ fontSize: 12 }}>Portuguese</MenuItem>
+          <MenuItem value={"ru"} sx={{ fontSize: 12 }}>Russian</MenuItem>
+          <MenuItem value={"es"} sx={{ fontSize: 12 }}>Spanish</MenuItem>
         </Select>
       </FormControl>
     </Box>

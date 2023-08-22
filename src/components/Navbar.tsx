@@ -28,7 +28,7 @@ function Navbar() {
             <Toolbar>
                 <Box>
                     <IconButton onClick={handleOpenUserMenu}>
-                        <Avatar alt="Remy Sharp" src={user?.photoURL} />
+                        <Avatar alt={user?.displayName} src={user?.photoURL} />
                     </IconButton>
                     <Menu
                         sx={{ mt: '45px' }}
@@ -46,6 +46,9 @@ function Navbar() {
                         open={Boolean(anchorElUser)}
                         onClose={handleCloseUserMenu}
                     >
+                        <MenuItem onClick={logOut}>
+                            <Typography textAlign="center">Profile</Typography>
+                        </MenuItem>
                         <MenuItem onClick={logOut}>
                             <Typography textAlign="center">Logout</Typography>
                         </MenuItem>
