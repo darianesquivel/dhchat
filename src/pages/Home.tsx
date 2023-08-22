@@ -37,6 +37,12 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SelectChat from '../assets/images/select_chat.svg'
 import Profile from "./Profile";
 import { TransitionProps } from "@mui/material/transitions";
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ChatIcon from '@mui/icons-material/Chat';
+import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 
 
 interface User {
@@ -368,12 +374,52 @@ export default function Home() {
               </MenuItem>
             </Menu>
           </Box>
-          <Divider orientation="horizontal" flexItem sx={{ marginTop: "3px", marginBottom: "3px" }} />
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="button" fontWeight={600}>
-              Chats
+          {/* <Divider orientation="horizontal" flexItem sx={{ marginTop: "3px", marginBottom: "3px" }} /> */}
+        <Accordion defaultExpanded sx={{width:'100%', backgroundColor:'#ffffff', marginTop: 2,}} >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="chats-content"
+          id="chats-header"
+        >
+            <ChatIcon sx={{marginTop: 0.5, marginRight: 1, color: "green" }}/>
+            <Typography variant="button" fontWeight={600}>Chats
+            <IconButton onClick={handleClickOpen} sx={{marginLeft: 0.5}}><AddIcon fontSize="small" /></IconButton>
             </Typography>
-            <IconButton onClick={handleClickOpen}><AddIcon fontSize="small" /></IconButton>
+        </AccordionSummary>
+        <AccordionDetails  sx={{padding: 0}}>
+        {conversations?.map((conversation: any, key) => {
+            const { lastMessage, avatar, name, id, lastMessageSendBy } =
+              conversation;
+            return (
+              <Box sx={{ alignItems: 'center', margin: 0.5 }}>
+              <Chat
+                key={key}
+                lastMessage={lastMessage}
+                lastMessageSendBy={lastMessageSendBy}
+                avatar={avatar}
+                name={name}
+                id={id}
+                onClick={handleClickConversation}
+              />
+              </Box>
+            );
+          })}
+        </AccordionDetails>
+      </Accordion>
+      <Accordion sx={{width:'100%', backgroundColor:'#ffffff'}} >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="contacts-content"
+          id="contacts-header"
+        >
+          <PermContactCalendarIcon sx={{marginTop: 0.5, marginRight: 1, color: "green" }}/>
+          <Typography variant="button" fontWeight={600}>Contacts
+            <IconButton onClick={handleClickOpen} sx={{marginLeft: 0.5}}><AddIcon fontSize="small" /></IconButton>
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails  sx={{padding: 0}}>
+        </AccordionDetails>
+      </Accordion>
             <Dialog
               open={open}
               onClose={handleClose}
@@ -396,23 +442,6 @@ export default function Home() {
               </DialogActions>
             </Dialog>
           </Box>
-
-          {conversations?.map((conversation: any, key) => {
-            const { lastMessage, avatar, name, id, lastMessageSendBy } =
-              conversation;
-            return (
-              <Chat
-                key={key}
-                lastMessage={lastMessage}
-                lastMessageSendBy={lastMessageSendBy}
-                avatar={avatar}
-                name={name}
-                id={id}
-                onClick={handleClickConversation}
-              />
-            );
-          })}
-        </Box>
         <Box
           sx={{
             width: "85%",
