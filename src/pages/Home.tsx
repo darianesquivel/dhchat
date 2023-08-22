@@ -129,6 +129,30 @@ export default function Home() {
     setNewMessage(newMessage + emoji);
   };
 
+  const [openProfile, setOpenProfile] = React.useState(false);
+  
+  const { logOut, user } = UserAuth()
+
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  const handleOpenProfile = () => {
+    setOpenProfile(true);
+    //setAnchorElUser(null);
+  };
+
+  const handleCloseProfile = () => {
+    setOpenProfile(false);
+  };
+
+
   const [messagesRef, setmessagesRef] = useState<CollectionReference | null>(null);
 
   useEffect(() => {
@@ -277,36 +301,15 @@ export default function Home() {
     }
   };
 
-  const [openProfile, setOpenProfile] = React.useState(false);
-  
-  const { logOut, user } = UserAuth()
 
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
-  const handleOpenProfile = () => {
-    setOpenProfile(true);
-  };
-
-  const handleCloseProfile = () => {
-    setOpenProfile(false);
-  };
-
-  const Transition = React.forwardRef(function Transition(
-    props: TransitionProps & {
-      children: React.ReactElement;
-    },
-    ref: React.Ref<unknown>,
-  ) {
-    return <Slide direction="up" ref={ref} {...props} />;
-  });
+  // const Transition = React.forwardRef(function Transition(
+  //   props: TransitionProps & {
+  //     children: React.ReactElement;
+  //   },
+  //   ref: React.Ref<unknown>,
+  // ) {
+  //   return <Slide direction="up" ref={ref} {...props} />;
+  // });
 
   return (
     <>
@@ -618,16 +621,17 @@ export default function Home() {
                 alignItems: "center",
               }}
             >
-              <Tooltip title='<-- Select a chat' placement="left" sx={{fontSize: "50px"}}>
+              <Tooltip title='<-- Select a chat' placement="left">
               <Box sx={{marginLeft: 5}}>
-              <img src={SelectChat} alt="Select Chat" width={450} />
+              <img src={SelectChat} alt="Select Chat" width={460} />
               </Box>
               </Tooltip>
+              <Box sx={{ display: "flex", marginTop: -15, marginLeft: -20.5}}><img width="48px" src={logo} alt="logo"/></Box>
             </Box>
           )}
         <Dialog
           open={openProfile}
-          TransitionComponent={Transition}
+          //TransitionComponent={Transition}
         >
           <Profile onClose={handleCloseProfile} />
         </Dialog>
