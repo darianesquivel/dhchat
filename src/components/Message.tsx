@@ -6,6 +6,7 @@ interface MessageProps {
   content: {
     text: string;
     imageUrl: string;
+    audioUrl: string;
   };
   avatar: string;
   name: string;
@@ -49,6 +50,7 @@ export default function Message({
   const timestampInMilliseconds = (sendAt?.seconds && sendAt?.nanoseconds) ? sendAt.seconds * 1000 + sendAt.nanoseconds / 1000000 : 0;
   const formattedDate = moment(timestampInMilliseconds).format('DD/MM/YYYY HH:mm');
 
+  console.log({ type })
   return (
     <>
       {user?.uid !== userId ? (
@@ -94,8 +96,19 @@ export default function Message({
                       style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
                     />
 
-                  </Box> :
-                  <Typography variant="caption" sx={{ fontSize: "14px" }}>{content.text}</Typography>
+                  </Box> : null
+              }
+              {
+                type === 'text' ?
+                  <Typography variant="caption" sx={{ fontSize: "14px" }}>{content.text}</Typography> :
+                  null
+              }
+              {
+                type === 'audio' ?
+                  <audio controls>
+                    <source src={content.audioUrl} type="audio/mpeg" />
+                  </audio> :
+                  null
               }
             </Box>
             {
@@ -167,8 +180,19 @@ export default function Message({
                       style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
                     />
 
-                  </Box> :
-                  <Typography variant="caption" sx={{ fontSize: "14px" }}>{content.text}</Typography>
+                  </Box> : null
+
+              }
+              {
+                type === 'text' ?
+                  <Typography variant="caption" sx={{ fontSize: "14px" }}>{content.text}</Typography> : null
+              }
+              {
+                type === 'audio' ?
+                  <audio controls>
+                    <source src={content.audioUrl} type="audio/mpeg" />
+                  </audio> :
+                  null
               }
               <Box
                 sx={{
