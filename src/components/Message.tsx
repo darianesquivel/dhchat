@@ -50,7 +50,6 @@ export default function Message({
   const timestampInMilliseconds = (sendAt?.seconds && sendAt?.nanoseconds) ? sendAt.seconds * 1000 + sendAt.nanoseconds / 1000000 : 0;
   const formattedDate = moment(timestampInMilliseconds).format('DD/MM/YYYY HH:mm');
 
-  console.log({ type })
   return (
     <>
       {user?.uid !== userId ? (
@@ -210,7 +209,7 @@ export default function Message({
             </Box>
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5, p: 0.5 }}>
-              {translateMe && (
+              {translateMe && type === 'text' && (
                 <Typography
                   sx={{
                     display: "block",

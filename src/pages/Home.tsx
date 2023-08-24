@@ -299,6 +299,7 @@ export default function Home() {
   );
 
   const addAudioElement = async (blob: any) => {
+    console.log({ blob })
     const audioUrl = URL.createObjectURL(blob);
 
     const arrayBuffer = await fetch(audioUrl)
@@ -351,14 +352,6 @@ export default function Home() {
       }
 
     }
-
-
-
-
-
-
-
-
 
   };
 
@@ -664,10 +657,8 @@ export default function Home() {
 
 
                 <AudioRecorder
-                  onRecordingComplete={(blob) => addAudioElement(blob)}
+                  onRecordingComplete={addAudioElement}
                   recorderControls={recorderControls}
-                  // downloadOnSavePress={true}
-                  // downloadFileExtension="mp3"
                   showVisualizer={true}
                   downloadFileExtension="webm"
                 />
