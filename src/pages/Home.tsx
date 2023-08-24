@@ -1,7 +1,7 @@
 import React from "react";
-import { Avatar, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Menu, MenuItem, Slide, TextField, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Menu, MenuItem, TextField, Tooltip, Typography } from "@mui/material";
 import { UserAuth } from "../context/AuthContext";
-import { createContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   addDoc,
   collection,
@@ -33,39 +33,18 @@ import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SelectChat from '../assets/images/select_chat.svg'
 import Profile from "./Profile";
-import { TransitionProps } from "@mui/material/transitions";
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChatIcon from '@mui/icons-material/Chat';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
-
-
-interface User {
-  email: string;
-  displayName: string;
-  photoURL:string;
-  uid:string;
-}
-
-  interface AuthContextProps {
-  googleSignIn: () => Promise<void>;
-  logOut: () => Promise<void>;
-  user: User | null;
-}
-
-const AuthContext = createContext<AuthContextProps>({
-  googleSignIn: async () => {},
-  logOut: async () => {},
-  user: null,
-});
+import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
+import { getDownloadURL, getStorage, ref, uploadBytes, updateMetadata } from "firebase/storage";
 
 export default function Home() {
-  //const { user } = UserAuth();
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const conversationsRef = collection(db, "conversations");
@@ -130,7 +109,7 @@ export default function Home() {
   };
 
   const [openProfile, setOpenProfile] = React.useState(false);
-  
+
   const { logOut, user } = UserAuth()
 
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -311,6 +290,78 @@ export default function Home() {
   //   return <Slide direction="up" ref={ref} {...props} />;
   // });
 
+  const recorderControls = useAudioRecorder(
+    {
+      noiseSuppression: true,
+      echoCancellation: true,
+    },
+    (err) => console.table(err) // onNotAllowedOrFound
+  );
+
+  const addAudioElement = async (blob: any) => {
+    const audioUrl = URL.createObjectURL(blob);
+
+    const arrayBuffer = await fetch(audioUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.arrayBuffer();
+      })
+      .then(arrayBuffer => arrayBuffer)
+      .catch(error => {
+        console.error(error);
+      });
+
+    const storage = getStorage();
+    const fileName = audioUrl.split('/').pop();
+    const storageRef = ref(storage, `audios/${fileName}`);
+
+    if (arrayBuffer) {
+      await uploadBytes(storageRef, arrayBuffer);
+      const metadata = { contentType: 'audio/mpeg' };
+      await updateMetadata(storageRef, metadata);
+
+      const uploadedAudioUrl = await getDownloadURL(storageRef);
+
+      const messageData = {
+        content: {
+          audioUrl: uploadedAudioUrl
+        },
+        sendAt: serverTimestamp(),
+        sendBy: user?.uid,
+        avatar: user?.photoURL,
+        user: user?.displayName,
+        type: 'audio'
+      };
+
+      if (messagesRef) {
+
+        addDoc(messagesRef, messageData);
+        const conversationRef = doc(
+          collection(db, "conversations"),
+          conversationId
+        );
+
+        updateDoc(conversationRef, {
+          lastMessage: 'audio',
+          lastMessageSendBy: user?.displayName,
+        });
+
+      }
+
+    }
+
+
+
+
+
+
+
+
+
+  };
+
   return (
     <>
       <Box
@@ -335,7 +386,7 @@ export default function Home() {
             alignItems: "center",
           }}
         >
-          <Box sx={{ marginTop: 2}}><img width="140px" src={logo} alt="logo"/></Box>
+          <Box sx={{ marginTop: 2 }}><img width="140px" src={logo} alt="logo" /></Box>
           <Divider orientation="horizontal" flexItem sx={{ marginTop: "10px", marginBottom: "3px" }} />
           <Box>
             <Tooltip title="User menu" placement="right-end">
@@ -362,90 +413,90 @@ export default function Home() {
               onClose={handleCloseUserMenu}
             >
               <MenuItem onClick={handleOpenProfile}>
-                <PersonIcon fontSize="small"  sx={{marginRight: 2, color: "#A8CF45" }}/>
+                <PersonIcon fontSize="small" sx={{ marginRight: 2, color: "#A8CF45" }} />
                 <Typography textAlign="center">Profile</Typography>
               </MenuItem>
               <MenuItem>
-                <SettingsIcon fontSize="small"  sx={{marginRight: 2, color: "#A8CF45" }}/>
+                <SettingsIcon fontSize="small" sx={{ marginRight: 2, color: "#A8CF45" }} />
                 <Typography textAlign="center">Configuration</Typography>
               </MenuItem>
               <MenuItem >
-                <Brightness4Icon fontSize="small"  sx={{marginRight: 2, color: "#A8CF45" }}/>
+                <Brightness4Icon fontSize="small" sx={{ marginRight: 2, color: "#A8CF45" }} />
                 <Typography textAlign="center">Dark mode</Typography>
               </MenuItem>
               <MenuItem onClick={logOut}>
-                <LogoutIcon fontSize="small" sx={{marginRight: 2, color: "#A8CF45" }}/>
+                <LogoutIcon fontSize="small" sx={{ marginRight: 2, color: "#A8CF45" }} />
                 <Typography textAlign="center">Logout</Typography>
               </MenuItem>
             </Menu>
           </Box>
           {/* <Divider orientation="horizontal" flexItem sx={{ marginTop: "3px", marginBottom: "3px" }} /> */}
-        <Accordion defaultExpanded sx={{width:'100%', backgroundColor:'#f8f8f8', marginTop: 0.5, boxShadow: 'none', border: 'none', }} >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="chats-content"
-          id="chats-header"
-        >
-            <ChatIcon sx={{ marginRight: 1, color: "#A8CF45" }}/>
-            <Typography variant="button" fontWeight={600}>Chats</Typography>
-        </AccordionSummary>
-        <AccordionDetails  sx={{padding: 0, fontSize: 13 }}>
-        <IconButton onClick={handleClickOpen} sx={{marginLeft: 0.5}}><AddIcon fontSize="small" /></IconButton>Add new chat
-        {conversations?.map((conversation: any, key) => {
-            const { lastMessage, avatar, name, id, lastMessageSendBy } =
-              conversation;
-            return (
-              <Box sx={{ alignItems: 'center', margin: 0.5 }}>
-              <Chat
-                key={key}
-                lastMessage={lastMessage}
-                lastMessageSendBy={lastMessageSendBy}
-                avatar={avatar}
-                name={name}
-                id={id}
-                onClick={handleClickConversation}
-              />
-              </Box>
-            );
-          })}
-        </AccordionDetails>
-      </Accordion>
-      <Accordion sx={{width:'100%', backgroundColor:'#f8f8f8', boxShadow: 'none', border: 'none', borderTopStyle: 'none'}} >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="contacts-content"
-          id="contacts-header"
-        >
-          <PermContactCalendarIcon sx={{ marginRight: 1, color: "#A8CF45" }}/>
-          <Typography variant="button" fontWeight={600}>Contacts</Typography>
-        </AccordionSummary>
-        <AccordionDetails  sx={{padding: 0, fontSize: 13 }}>
-        <IconButton sx={{marginLeft: 0.5}}><AddIcon fontSize="small" /></IconButton>Add new contact
-        </AccordionDetails>
-      </Accordion>
-                {/* <Divider orientation="horizontal" flexItem sx={{ marginBottom: "3px" }} /> */}
-            <Dialog
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
+          <Accordion defaultExpanded sx={{ width: '100%', backgroundColor: '#f8f8f8', marginTop: 0.5, boxShadow: 'none', border: 'none', }} >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="chats-content"
+              id="chats-header"
             >
-              <DialogTitle id="alert-dialog-title">
-                Add new chat
-              </DialogTitle>
-              <DialogContent>
-                <TextField onChange={(e) => setChatName(e.target.value)} id="outlined-basic" label="Name" variant="outlined" />
-                <TextField onChange={(e) => setAvatar(e.target.value)} id="outlined-basic" label="Avatar" variant="outlined" />
-                <ListAvatar users={users} onAddParticipants={setParticipants} currentUser={user?.email} />
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleSubmitNewChat} autoFocus>
-                  Add
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </Box>
+              <ChatIcon sx={{ marginRight: 1, color: "#A8CF45" }} />
+              <Typography variant="button" fontWeight={600}>Chats</Typography>
+            </AccordionSummary>
+            <AccordionDetails sx={{ padding: 0, fontSize: 13 }}>
+              <IconButton onClick={handleClickOpen} sx={{ marginLeft: 0.5 }}><AddIcon fontSize="small" /></IconButton>Add new chat
+              {conversations?.map((conversation: any, key) => {
+                const { lastMessage, avatar, name, id, lastMessageSendBy } =
+                  conversation;
+                return (
+                  <Box sx={{ alignItems: 'center', margin: 0.5 }}>
+                    <Chat
+                      key={key}
+                      lastMessage={lastMessage}
+                      lastMessageSendBy={lastMessageSendBy}
+                      avatar={avatar}
+                      name={name}
+                      id={id}
+                      onClick={handleClickConversation}
+                    />
+                  </Box>
+                );
+              })}
+            </AccordionDetails>
+          </Accordion>
+          <Accordion sx={{ width: '100%', backgroundColor: '#f8f8f8', boxShadow: 'none', border: 'none', borderTopStyle: 'none' }} >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="contacts-content"
+              id="contacts-header"
+            >
+              <PermContactCalendarIcon sx={{ marginRight: 1, color: "#A8CF45" }} />
+              <Typography variant="button" fontWeight={600}>Contacts</Typography>
+            </AccordionSummary>
+            <AccordionDetails sx={{ padding: 0, fontSize: 13 }}>
+              <IconButton sx={{ marginLeft: 0.5 }}><AddIcon fontSize="small" /></IconButton>Add new contact
+            </AccordionDetails>
+          </Accordion>
+          {/* <Divider orientation="horizontal" flexItem sx={{ marginBottom: "3px" }} /> */}
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              Add new chat
+            </DialogTitle>
+            <DialogContent>
+              <TextField onChange={(e) => setChatName(e.target.value)} id="outlined-basic" label="Name" variant="outlined" />
+              <TextField onChange={(e) => setAvatar(e.target.value)} id="outlined-basic" label="Avatar" variant="outlined" />
+              <ListAvatar users={users} onAddParticipants={setParticipants} currentUser={user?.email} />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button onClick={handleSubmitNewChat} autoFocus>
+                Add
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </Box>
         <Box
           sx={{
             width: "85%",
@@ -610,6 +661,17 @@ export default function Home() {
                   >
                   </Button>
                 </Tooltip>
+
+
+                <AudioRecorder
+                  onRecordingComplete={(blob) => addAudioElement(blob)}
+                  recorderControls={recorderControls}
+                  // downloadOnSavePress={true}
+                  // downloadFileExtension="mp3"
+                  showVisualizer={true}
+                  downloadFileExtension="webm"
+                />
+
               </Box>
             </>
           ) : (
@@ -622,21 +684,25 @@ export default function Home() {
               }}
             >
               <Tooltip title='<-- Select a chat' placement="left">
-              <Box sx={{marginLeft: 5}}>
-              <img src={SelectChat} alt="Select Chat" width={460} />
-              </Box>
+                <Box sx={{ marginLeft: 5 }}>
+                  <img src={SelectChat} alt="Select Chat" width={460} />
+                </Box>
               </Tooltip>
-              <Box sx={{ display: "flex", marginTop: -15, marginLeft: -20.5}}><img width="48px" src={logo} alt="logo"/></Box>
+              <Box sx={{ display: "flex", marginTop: -15, marginLeft: -20.5 }}><img width="48px" src={logo} alt="logo" /></Box>
             </Box>
           )}
-        <Dialog
-          open={openProfile}
+          <Dialog
+            open={openProfile}
           //TransitionComponent={Transition}
-        >
-          <Profile onClose={handleCloseProfile} />
-        </Dialog>
+          >
+            <Profile onClose={handleCloseProfile} />
+          </Dialog>
         </Box>
       </Box>
     </>
   );
 }
+function uuidv4() {
+  throw new Error("Function not implemented.");
+}
+
