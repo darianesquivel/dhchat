@@ -299,7 +299,6 @@ export default function Home() {
   );
 
   const addAudioElement = async (blob: any) => {
-    console.log({ blob })
     const audioUrl = URL.createObjectURL(blob);
 
     const arrayBuffer = await fetch(audioUrl)

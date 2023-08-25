@@ -23,19 +23,16 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   const [previewImage, setPreviewImage] = useState('')
   const [previewView, setPreviewView] = useState(false)
 
-
   const handleImageChange = async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
     const file = event.target.files && event.target.files[0];
     setSelectedImage(file)
   };
 
-
-
   const handleCancel = () => {
     setSelectedImage(null)
     setPreviewView(false)
     setNewMessage('')
-
+    setPreviewImage('')
   };
 
   const handleSubmitImage = () => {
@@ -79,7 +76,6 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   const capture = useCallback(() => {
     if (webcamRef.current) {
       const imageSrc = webcamRef.current.getScreenshot();
-      console.log({ imageSrc });
       if (imageSrc) {
         setNewMessage(imageSrc)
         setPreviewImage(imageSrc)
@@ -90,39 +86,49 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 
   return (
     <Box
-      sx={!previewView ? {
-        borderRadius: 2,
-        padding: '10px',
+      sx={{
         backgroundColor: '#A8CF45',
         boxShadow: '1px 1px 2px rgba(0, 0, 0, 0.15)',
-        width: 'auto',
-        fontSize: '13px',
-      } : {
-        borderRadius: 2,
-        padding: '10px',
-        backgroundColor: 'white',
-        boxShadow: '1px 1px 2px rgba(0, 0, 0, 0.15)',
-        width: 'auto',
-        fontSize: '13px',
+        minWidth: 400,
+        minHeight: 400,
       }}
     >
       {
         !previewView ?
-          <Box sx={{ height: '300px', objectFit: 'contain', }}>
-            <Tooltip title="Supports images in JPEG, PNG, WEBP, GIF, AVIF and TIFF formats." placement="top">
-              <InfoIcon sx={{ color: 'white' }} />
-            </Tooltip>
-            <input type="file" onChange={handleImageChange} accept="image/*" />
+          <Box
+            sx={{
+              minHeight: 400,
+              display: 'grid',
+              gap: 1,
+              gridTemplateRows: '1fr 80%',
+              alignItems: 'center',
+              justifyItems: "center"
+            }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+              <Tooltip title="Supports images in JPEG, PNG, WEBP, GIF, AVIF and TIFF formats." placement="top">
+                <InfoIcon sx={{ color: 'white' }} />
+              </Tooltip>
+              <input type="file" onChange={handleImageChange} accept="image/*" />
+            </Box>
 
+            <Box sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1
+            }}>
+              <Webcam
+                audio={false}
+                ref={webcamRef}
+                screenshotFormat="image/jpeg"
+                width={350}
+              />
+              <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+                <Button size='small' variant='outlined' color='success' sx={{ borderRadius: 8 }} onClick={capture}>Capture photo</Button>
+                <Button size='small' variant='contained' color='error' sx={{ borderRadius: 8 }} onClick={() => setShowImageUpload(false)}>Cancel</Button>
+              </Box>
 
+            </Box>
 
-            <Webcam
-              audio={false}
-              ref={webcamRef}
-              screenshotFormat="image/jpeg"
-              width={200}
-            />
-            <button onClick={capture}>Capture photo</button>
 
           </Box>
           :
@@ -130,7 +136,16 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       }
       {
         previewView && (
-          <Box>
+          <Box
+            sx={{
+              minHeight: 400,
+              display: 'grid',
+              gap: 3,
+              gridTemplateRows: '1fr 20%',
+              alignItems: 'center',
+              justifyItems: "center",
+            }}
+          >
             <img src={previewImage} alt="" style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }} />
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
               <Button sx={{ borderRadius: 10 }} color='error' variant='outlined' onClick={handleCancel}>Cancel</Button>
