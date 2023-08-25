@@ -40,6 +40,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChatIcon from '@mui/icons-material/Chat';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 import { getDownloadURL, getStorage, ref, uploadBytes, updateMetadata } from "firebase/storage";
@@ -376,6 +377,7 @@ export default function Home() {
             gap: 0.5,
             backgroundColor: "white",
             alignItems: "center",
+            overflow: "auto",
           }}
         >
           <Box sx={{ marginTop: 2 }}><img width="140px" src={logo} alt="logo" /></Box>
@@ -672,14 +674,14 @@ export default function Home() {
                 height: "100%",
                 justifyContent: "center",
                 alignItems: "center",
+                marginLeft: -33,
               }}
             >
-              <Tooltip title='<-- Select a chat' placement="left">
-                <Box sx={{ marginLeft: 5 }}>
-                  <img src={SelectChat} alt="Select Chat" width={460} />
-                </Box>
-              </Tooltip>
-              <Box sx={{ display: "flex", marginTop: -15, marginLeft: -20.5 }}><img width="48px" src={logo} alt="logo" /></Box>
+              <Box sx={{ marginLeft: 5 }}><img src={SelectChat} alt="Select Chat" width={460} /></Box>
+              <Box sx={{ display: "flex", marginTop: -15, marginLeft: -20.4 }}><img width="48px" src={logo} alt="logo" /></Box>
+              <Box sx={{ display: "flex", marginTop: 25, marginLeft: -40 }}>
+                <ArrowBackIcon sx={{ marginRight: 2, }} />Select a chat
+              </Box>
             </Box>
           )}
           <Dialog
