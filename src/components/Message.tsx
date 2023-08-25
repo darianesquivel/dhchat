@@ -134,12 +134,11 @@ export default function Message({
   translateMe,
   type
 }: MessageProps) {
+
   const { user } = UserAuth();
   const timestampInMilliseconds = (sendAt?.seconds && sendAt?.nanoseconds) ? sendAt.seconds * 1000 + sendAt.nanoseconds / 1000000 : 0;
   const formattedDate = moment(timestampInMilliseconds).format('DD/MM/YYYY HH:mm');
   const classes = useStyles()
-
-
 
   const MessageContent = () => {
     switch (type) {
@@ -163,20 +162,13 @@ export default function Message({
   return (
     <Box className={user?.uid === userId ? classes.containerLogUser : classes.container}>
       <Box className={user?.uid === userId ? classes.avatarMessageLoginUser : classes.avatarMessage}>
-        {
-          user?.uid === userId ? null :
-            <Avatar className={classes.avatar} src={avatar} />
-        }
+        {user?.uid === userId ? null : <Avatar className={classes.avatar} src={avatar} />}
         <Box className={classes.messagesContainer}>
           <Box className={user?.uid === userId ? classes.nameContentDateLogUser : classes.nameContentDate}>
             <Typography className={classes.name}> {user?.uid === userId ? null : `${name}`} </Typography>
-
             <MessageContent />
-
-
             <Typography className={classes.date} >{formattedDate}</Typography>
             <Box className={user?.uid === userId ? classes.bubbleDialogLogUser : classes.bubbleDialog} />
-
           </Box>
           {
             (user?.uid !== userId || translateMe) && type === 'text' ?
@@ -184,11 +176,7 @@ export default function Message({
                 <Chip color="success" size="small" label={lenguage} className={classes.chip} />
                 {translatedContent?.[lenguage as keyof typeof translatedContent] ? (
                   translatedContent[lenguage as keyof typeof translatedContent]
-                ) : (
-                  <Skeleton width={40} />
-                )}
-              </Typography> :
-              null
+                ) : (<Skeleton width={40} />)} </Typography> : null
           }
         </Box>
       </Box>
