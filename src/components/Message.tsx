@@ -146,7 +146,6 @@ export default function Message({
       case 'text':
         return <Box>
           <Typography variant="subtitle2">{content.text}</Typography>
-
         </Box>
       case 'image':
         return <img className={classes.image} src={content.imageUrl} alt="Imagen" />;
@@ -168,9 +167,6 @@ export default function Message({
           user?.uid === userId ? null :
             <Avatar className={classes.avatar} src={avatar} />
         }
-
-
-
         <Box className={classes.messagesContainer}>
           <Box className={user?.uid === userId ? classes.nameContentDateLogUser : classes.nameContentDate}>
             <Typography className={classes.name}> {user?.uid === userId ? null : `${name}`} </Typography>
