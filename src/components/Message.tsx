@@ -164,7 +164,7 @@ export default function Message({
       <Box className={user?.uid === userId ? classes.avatarMessageLoginUser : classes.avatarMessage}>
         {user?.uid === userId ? null : <Avatar className={classes.avatar} src={avatar} />}
         <Box className={classes.messagesContainer}>
-          <Box className={user?.uid === userId ? classes.nameContentDateLogUser : classes.nameContentDate}>
+          <Box className={`${user?.uid === userId && type !== 'audio' ? classes.nameContentDateLogUser : null} ${user?.uid !== userId && type !== 'audio' ? classes.nameContentDate : null}`} >
             <Typography className={classes.name}> {user?.uid === userId ? null : `${name}`} </Typography>
             <MessageContent />
             <Typography className={classes.date} >{formattedDate}</Typography>
