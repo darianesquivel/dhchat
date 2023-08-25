@@ -62,14 +62,14 @@ const useStyles = makeStyles((theme) => ({
   nameContentDate: {
     background: "#EAEAEA",
     display: "inline-block",
-    borderRadius: 8,
+    borderRadius: 12,
     padding: '10px',
     position: 'relative',
   },
   nameContentDateLogUser: {
     background: "#a8cf45",
     display: "inline-block",
-    borderRadius: 8,
+    borderRadius: 12,
     padding: '10px',
     marginTop: '10px',
     marginLeft: 'auto',
