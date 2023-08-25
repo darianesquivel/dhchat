@@ -39,12 +39,11 @@ interface MessageProps {
 const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
-    maxWidth: '100%',
   },
   containerLogUser: {
     display: 'flex',
     justifyContent: 'flex-end',
-    maxWidth: '100%',
+    paddingRight: 10
   },
   avatar: {
     position: 'relative',
@@ -64,16 +63,14 @@ const useStyles = makeStyles((theme) => ({
     background: "#EAEAEA",
     display: "inline-block",
     borderRadius: 8,
-    padding: '10px 15px',
-    marginTop: '10px',
-    marginLeft: 'auto',
+    padding: '10px',
     position: 'relative',
   },
   nameContentDateLogUser: {
-    background: "#A8CF45",
+    background: "#a8cf45",
     display: "inline-block",
     borderRadius: 8,
-    padding: '10px 15px',
+    padding: '10px',
     marginTop: '10px',
     marginLeft: 'auto',
     position: 'relative',
@@ -101,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     borderStyle: 'solid',
     borderWidth: '10px 10px 10px 10px',
-    borderColor: 'transparent #A8CF45 transparent transparent',
+    borderColor: 'transparent #a8cf45 transparent transparent',
     top: '10px',
     right: '-8px',
     transform: 'rotate(40deg)'
@@ -110,15 +107,19 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '100%', maxHeight: '300px', objectFit: 'contain'
   },
   translateMessage: {
-    maxWidth: '90%',
+    width: 'fit-content',
     display: "inline-block",
     borderRadius: 8,
-    padding: 6,
-    margin: 2,
+    padding: '2px 5px',
+    margin: 1,
     background: "#F1F7E1",
   },
   chip: {
     marginRight: 5
+  },
+  messagesContainer: {
+    display: 'flex',
+    flexDirection: 'column'
   }
 }));
 
@@ -145,18 +146,7 @@ export default function Message({
       case 'text':
         return <Box>
           <Typography variant="subtitle2">{content.text}</Typography>
-          {
-            user?.uid !== userId || translateMe ?
-              <Typography variant="caption" className={classes.translateMessage}>
-                <Chip color="success" size="small" label={lenguage} className={classes.chip} />
-                {translatedContent?.[lenguage as keyof typeof translatedContent] ? (
-                  translatedContent[lenguage as keyof typeof translatedContent]
-                ) : (
-                  <Skeleton width={40} />
-                )}
-              </Typography> :
-              null
-          }
+
         </Box>
       case 'image':
         return <img className={classes.image} src={content.imageUrl} alt="Imagen" />;
@@ -178,15 +168,32 @@ export default function Message({
           user?.uid === userId ? null :
             <Avatar className={classes.avatar} src={avatar} />
         }
-        <Box className={user?.uid === userId ? classes.nameContentDateLogUser : classes.nameContentDate}>
-          <Typography className={classes.name}>
-            {
-              user?.uid === userId ? null : `${name}`
-            }
-          </Typography>
-          <MessageContent />
-          <Typography className={classes.date} >{formattedDate}</Typography>
-          <Box className={user?.uid === userId ? classes.bubbleDialogLogUser : classes.bubbleDialog} />
+
+
+
+        <Box className={classes.messagesContainer}>
+          <Box className={user?.uid === userId ? classes.nameContentDateLogUser : classes.nameContentDate}>
+            <Typography className={classes.name}> {user?.uid === userId ? null : `${name}`} </Typography>
+
+            <MessageContent />
+
+
+            <Typography className={classes.date} >{formattedDate}</Typography>
+            <Box className={user?.uid === userId ? classes.bubbleDialogLogUser : classes.bubbleDialog} />
+
+          </Box>
+          {
+            (user?.uid !== userId || translateMe) && type === 'text' ?
+              <Typography variant="caption" className={classes.translateMessage}>
+                <Chip color="success" size="small" label={lenguage} className={classes.chip} />
+                {translatedContent?.[lenguage as keyof typeof translatedContent] ? (
+                  translatedContent[lenguage as keyof typeof translatedContent]
+                ) : (
+                  <Skeleton width={40} />
+                )}
+              </Typography> :
+              null
+          }
         </Box>
       </Box>
     </Box>
