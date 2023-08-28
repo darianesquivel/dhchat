@@ -1,6 +1,7 @@
 import { Avatar, Box, Chip, Skeleton, Typography } from "@mui/material";
 import moment from 'moment';
 import { UserAuth } from "../context/AuthContext";
+import { makeStyles } from "@mui/styles";
 
 interface MessageProps {
   content: {
@@ -35,6 +36,93 @@ interface MessageProps {
   type: string;
 }
 
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+  },
+  containerLogUser: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    paddingRight: 10
+  },
+  avatar: {
+    position: 'relative',
+    top: '10px'
+  },
+  avatarMessage: {
+    display: 'flex',
+    gap: 20,
+  },
+  avatarMessageLoginUser: {
+    display: 'flex',
+    flexDirection: 'row-reverse',
+    gap: 20,
+
+  },
+  nameContentDate: {
+    background: "#EAEAEA",
+    display: "inline-block",
+    borderRadius: 12,
+    padding: '10px',
+    position: 'relative',
+  },
+  nameContentDateLogUser: {
+    background: "#a8cf45",
+    display: "inline-block",
+    borderRadius: 12,
+    padding: '10px',
+    marginTop: '10px',
+    marginLeft: 'auto',
+    position: 'relative',
+    textAlign: 'end'
+  },
+  name: {
+    fontSize: 14,
+    fontWeight: 600,
+  },
+  date: {
+    fontSize: 10,
+    textAlign: 'end',
+  },
+  bubbleDialog: {
+    position: 'absolute',
+    borderStyle: 'solid',
+    borderWidth: '10px 0 10px 10px',
+    borderColor: 'transparent transparent transparent #EAEAEA',
+    top: '10px',
+    left: '-8px',
+    right: 'auto',
+    transform: 'rotate(-40deg)'
+  },
+  bubbleDialogLogUser: {
+    position: 'absolute',
+    borderStyle: 'solid',
+    borderWidth: '10px 10px 10px 10px',
+    borderColor: 'transparent #a8cf45 transparent transparent',
+    top: '10px',
+    right: '-8px',
+    transform: 'rotate(40deg)'
+  },
+  image: {
+    maxWidth: '100%', maxHeight: '300px', objectFit: 'contain'
+  },
+  translateMessage: {
+    width: 'fit-content',
+    display: "inline-block",
+    borderRadius: 8,
+    padding: '2px 5px',
+    margin: 1,
+    background: "#F1F7E1",
+  },
+  chip: {
+    marginRight: 5
+  },
+  messagesContainer: {
+    display: 'flex',
+    flexDirection: 'column'
+  }
+}));
+
 export default function Message({
   content,
   avatar,
@@ -46,196 +134,52 @@ export default function Message({
   translateMe,
   type
 }: MessageProps) {
+
   const { user } = UserAuth();
   const timestampInMilliseconds = (sendAt?.seconds && sendAt?.nanoseconds) ? sendAt.seconds * 1000 + sendAt.nanoseconds / 1000000 : 0;
   const formattedDate = moment(timestampInMilliseconds).format('DD/MM/YYYY HH:mm');
+  const classes = useStyles()
+
+  const MessageContent = () => {
+    switch (type) {
+      case 'text':
+        return <Box>
+          <Typography variant="subtitle2">{content.text}</Typography>
+        </Box>
+      case 'image':
+        return <img className={classes.image} src={content.imageUrl} alt="Imagen" />;
+      case 'audio':
+        return (
+          <audio controls>
+            <source src={content.audioUrl} type="audio/mpeg" />
+          </audio>
+        );
+      default:
+        return null;
+    }
+  }
 
   return (
-    <>
-      {user?.uid !== userId ? (
-        <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1, m: 1 }}>
-          <Box>
-            <Avatar alt="avatar" src={avatar} style={{ width: '60px', height: '60px' }} />
+    <Box className={user?.uid === userId ? classes.containerLogUser : classes.container}>
+      <Box className={user?.uid === userId ? classes.avatarMessageLoginUser : classes.avatarMessage}>
+        {user?.uid === userId ? null : <Avatar className={classes.avatar} src={avatar} />}
+        <Box className={classes.messagesContainer}>
+          <Box className={user?.uid === userId ? classes.nameContentDateLogUser : classes.nameContentDate}>
+            <Typography className={classes.name}> {user?.uid === userId ? null : `${name}`} </Typography>
+            <MessageContent />
+            <Typography className={classes.date} >{formattedDate}</Typography>
+            <Box className={user?.uid === userId ? classes.bubbleDialogLogUser : classes.bubbleDialog} />
           </Box>
-          <Box sx={{ p: 0.5 }}>
-            <Typography sx={{ p: 0.3, textAlign: "start" }} fontWeight={600} variant="body2">{name}</Typography>
-            <Box
-              sx={{
-                background: "#eeeeee",
-                display: "inline-block",
-                borderRadius: 3,
-                padding: '10px 15px',
-                marginTop: '10px',
-                marginLeft: 'auto',
-                position: 'relative',
-              }}
-            >
-              <Typography variant="body2" fontSize={10} align="left" color={"grey"}>
-                {`${formattedDate}`}
-              </Typography>
-              <Box
-                sx={{
-                  position: 'absolute',
-                  content: '""',
-                  borderStyle: 'solid',
-                  borderWidth: '10px 0 10px 10px',
-                  borderColor: 'transparent transparent transparent #eeeeee',
-                  top: '-10px',
-                  left: '15px',
-                  right: 'auto',
-                  transform: 'translateX(-50%)',
-                }}
-              />
-              {
-                type === 'image' ?
-                  <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
-                    <img
-                      src={content?.imageUrl?.replace(/(\.[^.]+)$/, '_250x250$1')}
-                      alt=""
-                      style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
-                    />
-
-                  </Box> : null
-              }
-              {
-                type === 'text' ?
-                  <Typography variant="caption" sx={{ fontSize: "14px" }}>{content.text}</Typography> :
-                  null
-              }
-              {
-                type === 'audio' ?
-                  <audio controls>
-                    <source src={content.audioUrl} type="audio/mpeg" />
-                  </audio> :
-                  null
-              }
-            </Box>
-            {
-              content.text ?
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5, p: 0.5 }}>
-                  <Typography
-                    sx={{
-                      display: "flex",
-                      gap: 1,
-                      borderRadius: 3,
-                      p: 0.5,
-                      alignItems: "center",
-                      background: "#f1f7e1",
-                      fontSize: "14px",
-                      marginLeft: "-36px",
-                    }}
-                    variant="caption"
-                  >
-                    <Chip color="success" size="small" label={lenguage} sx={{ width: '35px' }} />
-                    {translatedContent?.[lenguage as keyof typeof translatedContent] ? (
-                      translatedContent[lenguage as keyof typeof translatedContent]
-                    ) : (
-                      <Skeleton width={40} />
-                    )}
-                  </Typography>
-                </Box> : null
-            }
-
-          </Box>
+          {
+            (user?.uid !== userId || translateMe) && type === 'text' ?
+              <Typography variant="caption" className={classes.translateMessage}>
+                <Chip color="success" size="small" label={lenguage} className={classes.chip} />
+                {translatedContent?.[lenguage as keyof typeof translatedContent] ? (
+                  translatedContent[lenguage as keyof typeof translatedContent]
+                ) : (<Skeleton width={40} />)} </Typography> : null
+          }
         </Box>
-      ) : (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row-reverse",
-            alignItems: "flex-start",
-            gap: 1,
-            m: 1,
-            justifyContent: "flex-start",
-          }}
-        >
-          <Box>
-            <Avatar alt="avatar" src={avatar} style={{ width: '60px', height: '60px' }} />
-          </Box>
-          <Box sx={{ p: 0.5, alignItems: "end", textAlign: "end" }}>
-            <Typography sx={{ p: 0.3, textAlign: "end" }} fontWeight={600} variant="body2">Me</Typography>
-
-            <Box
-              sx={{
-                background: "#eeeeee",
-                display: "inline-block",
-                borderRadius: 3,
-                padding: '10px 15px',
-                marginTop: '10px',
-                marginLeft: 'auto',
-                position: 'relative',
-              }}
-            >
-              <Typography variant="body2" fontSize={10} align="right" color={"grey"}>
-                {`${formattedDate}`}
-              </Typography>
-
-              {
-                type === 'image' ?
-                  <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
-                    <img
-                      src={content?.imageUrl?.replace(/(\.[^.]+)$/, '_250x250$1')}
-                      alt=""
-                      style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
-                    />
-
-                  </Box> : null
-
-              }
-              {
-                type === 'text' ?
-                  <Typography variant="caption" sx={{ fontSize: "14px" }}>{content.text}</Typography> : null
-              }
-              {
-                type === 'audio' ?
-                  <audio controls>
-                    <source src={content.audioUrl} type="audio/mpeg" />
-                  </audio> :
-                  null
-              }
-              <Box
-                sx={{
-                  position: 'absolute',
-                  content: '""',
-                  borderStyle: 'solid',
-                  borderWidth: '10px 10px 0 10px',
-                  borderColor: 'transparent #eeeeee transparent transparent',
-                  top: '-10px',
-                  left: 'auto',
-                  right: '0px',
-                  transform: 'translateX(-50%)',
-                }}
-              />
-            </Box>
-
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5, p: 0.5 }}>
-              {translateMe && type === 'text' && (
-                <Typography
-                  sx={{
-                    display: "block",
-                    gap: 1,
-                    borderRadius: 3,
-                    p: 0.5,
-                    alignItems: "center",
-                    background: "#f1f7e1",
-                    fontSize: "14px",
-                    textAlign: "end",
-                    marginRight: "-38px",
-                  }}
-                  variant="caption"
-                >
-                  {translatedContent?.[lenguage as keyof typeof translatedContent] ? (
-                    translatedContent[lenguage as keyof typeof translatedContent]
-                  ) : (
-                    <Skeleton width={40} />
-                  )}
-                  <Chip color="success" size="small" label={lenguage} sx={{ width: '35px', marginLeft: '10px' }} />
-                </Typography>
-              )}
-            </Box>
-          </Box>
-        </Box>
-      )}
-    </>
+      </Box>
+    </Box>
   );
 }

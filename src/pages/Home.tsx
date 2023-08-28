@@ -537,11 +537,12 @@ export default function Home() {
                 sx={{
                   display: "flex",
                   flexDirection: "column",
+                  gap: 1,
                   height: "90%",
                   borderRadius: 2,
                   p: 1,
-                  overflow: "auto",
                   mb: 1,
+                  overflow: "auto",
                 }}
               >
                 {messages?.map((message: any, key) => {
