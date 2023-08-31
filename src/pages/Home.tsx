@@ -87,6 +87,10 @@ export default function Home() {
     setOpen(false);
   };
 
+  const handleBack = () => {
+    setDisplayMessages(false)
+  }
+
   const handleSubmitNewChat = async () => {
     const newConversation = {
       name: chatName,
@@ -380,7 +384,9 @@ export default function Home() {
             overflow: "auto",
           }}
         >
-          <Box sx={{ marginTop: 2 }}><img width="140px" src={logo} alt="logo" /></Box>
+          <Box sx={{ marginTop: 2 }}>
+            <img onClick={handleBack} width="140px" src={logo} alt="logo" />
+          </Box>
           <Divider orientation="horizontal" flexItem sx={{ marginTop: "10px", marginBottom: "3px" }} />
           <Box>
             <Tooltip title="User menu" placement="right-end">
