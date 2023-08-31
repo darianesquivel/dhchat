@@ -384,12 +384,14 @@ export default function Home() {
             overflow: "auto",
           }}
         >
-          <Box sx={{ marginTop: 2 }}>
+          <Box sx={{ marginTop: 2, cursor:"pointer" }}>
+          <Tooltip title="Home" placement="bottom">
             <img onClick={handleBack} width="140px" src={logo} alt="logo" />
+            </Tooltip>
           </Box>
           <Divider orientation="horizontal" flexItem sx={{ marginTop: "10px", marginBottom: "3px" }} />
           <Box>
-            <Tooltip title="User menu" placement="right-end">
+            <Tooltip title="User menu" placement="right-start">
               <IconButton onClick={handleOpenUserMenu}
                 edge="start">
                 <Avatar alt={user?.displayName} src={user?.photoURL} />
