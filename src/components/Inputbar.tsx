@@ -1,43 +1,24 @@
-import { Box, Button, IconButton, Menu, MenuItem, TextField, Tooltip } from '@mui/material'
+import { Box, IconButton, Menu, MenuItem, TextField } from '@mui/material'
 import SendIcon from "@mui/icons-material/Send";
-import { AudioRecorder } from 'react-audio-voice-recorder';
 import { makeStyles } from '@mui/styles';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import AddIcon from '@mui/icons-material/Add';
 import MicIcon from '@mui/icons-material/Mic';
-import { useState } from 'react';
-
-const useStyles = makeStyles(() => ({
-    container: {
-        display: 'grid',
-        gridTemplateColumns: '1fr 80% 1fr',
-        backgroundColor: "#A8CF45",
-        alignContent: 'center'
-    },
-    iconsAndMore: {
-        display: 'flex',
-        justifyContent: 'center'
-    },
-    input: {
-    },
-    sendAndAudio: {
-        display: 'flex',
-        justifyContent: 'center'
-    }
-}));
+import { useEffect, useState } from 'react';
+import { collection, serverTimestamp } from '@firebase/firestore';
+import useStore from '../context/store';
+import { db } from '../api/Config/firebase';
 
 export default function Inputbar() {
     const classes = useStyles()
     const [message, setMessage] = useState('')
     const [openMore, setOpenMore] = useState<null | HTMLElement>(null); // Estado menu 'more' del input.
+    const [conversationMessageRef, setConversationMessageRef]: any = useState() // Guarda ref para enviar mensajes a la conversacion correcta
+    const { currentConversation, currentUser }: any = useStore()
 
 
     const handleChange = (event: any) => {
         setMessage(event.target.value)
-    }
-
-    const handleSubmitMessage = () => {
-        console.log({ message })
     }
 
     const handleMore = (event: React.MouseEvent<HTMLElement>) => {
@@ -48,107 +29,39 @@ export default function Inputbar() {
         setOpenMore(null); // Cierra el menu 'more'.
     };
 
+    useEffect(() => {
+        // la ref de la conversacion donde enviar los mensajes.
+        if (currentConversation) {
+            const conversationMessagesRef = collection(
+                db,
+                "conversations",
+                currentConversation?.id,
+                "messages"
+            );
+            setConversationMessageRef(conversationMessagesRef)
+        }
+
+    }, [currentConversation])
+
+    console.log({ currentUser })
+
+    const handleSubmitMessage = () => {
+        const messageData = {
+            content: {
+                text: message,
+            },
+            sendAt: serverTimestamp(),
+            // sendBy: user?.uid,
+            // avatar: user?.photoURL,
+            // user: user?.displayName,
+            // type: messageType
+        };
+        console.log({ messageData })
+        //   addDoc(messagesRef, messageData);
+    };
+
+
     return (
-        //     <Box
-        //         sx={{
-        //             width: "100%",
-        //             display: "flex",
-        //             gap: 1,
-        //             p: 1,
-        //             backgroundColor: "#A8CF45",
-        //             borderRadius: 2,
-        //         }}
-        //     >
-
-        //         <Tooltip title="Emojis" placement="top">
-        //             <Button
-        //                 sx={{ borderRadius: 10 }}
-        //                 variant="contained"
-        //                 color="success"
-        //                 style={{ width: "10px" }}
-        //                 // onClick={(event) => toggleShowEmoji(event)}
-        //                 startIcon={<EmojiEmotionsIcon style={{ marginLeft: "10px" }} />}
-        //                 size="small"
-        //             />
-        //         </Tooltip>
-        //         {/* <Menu
-        //   sx={{ display: 'flex' }}
-        //   open={false} //arreglar
-        //   onClose={() => setShowEmoji(false)}
-        // >
-        //   <Picker
-        //     data={data}
-        //     emojiSize={24}
-        //     emojiButtonSize={36}
-        //     onEmojiSelect={addEmoji}
-        //     maxFrequentRows={0}
-        //   />
-        // </Menu> */}
-
-        //         <Tooltip title="Attach" placement="top">
-        //             <Button
-        //                 sx={{ borderRadius: 10 }}
-        //                 variant="contained"
-        //                 color="success"
-        //                 style={{ width: "10px" }}
-        //                 // onClick={(event) => toggleImageUpload(event)}
-        //                 startIcon={<CameraAltIcon style={{ marginLeft: "10px" }} />}
-        //                 size="small"
-        //             />
-        //         </Tooltip>
-        //         {/* <Dialog
-        //             open={showImageUpload}
-        //             onClose={() => setShowImageUpload(false)}
-        //         >
-        //             <ImageUploader
-        //                 showImageUpload={showImageUpload}
-        //                 toggleImageUpload={toggleImageUpload as () => void}
-        //                 setNewMessage={setNewMessage}
-        //                 setShowImageUpload={setShowImageUpload}
-        //                 handleSubmit={() => handleSubmit('image')}
-        //             />
-        //         </Dialog> */}
-
-        //         <TextField
-        //             sx={{
-        //                 backgroundColor: "white",
-        //                 borderRadius: 10,
-        //                 width: "90%",
-        //                 "& .MuiOutlinedInput-root": {
-        //                     borderRadius: 10,
-        //                 },
-        //             }}
-        //             size="small"
-        //             minRows={3}
-        //             placeholder="Type your message..."
-        //         // value={newMessage}
-        //         // onChange={(e) => setNewMessage(e.target.value)}
-        //         // onKeyDown={handleKeyDown}
-        //         />
-
-        //         <Tooltip title="Send" placement="top">
-        //             <Button
-        //                 sx={{ borderRadius: 10 }}
-        //                 variant="contained"
-        //                 color="success"
-        //                 style={{ width: "10%" }}
-        //                 // onClick={() => handleSubmit()}
-        //                 startIcon={<SendIcon style={{ marginLeft: "10px" }} />}
-        //                 size="small"
-        //             >
-        //             </Button>
-        //         </Tooltip>
-
-
-        //         <AudioRecorder
-        //             // onRecordingComplete={addAudioElement}
-        //             // recorderControls={recorderControls}
-        //             showVisualizer={true}
-        //             downloadFileExtension="webm"
-        //         />
-
-        //     </Box>
-
         <Box className={classes.container}>
             <Box className={classes.iconsAndMore}>
                 <IconButton>
@@ -190,3 +103,23 @@ export default function Inputbar() {
         </Box>
     )
 }
+
+
+const useStyles = makeStyles(() => ({
+    container: {
+        display: 'grid',
+        gridTemplateColumns: '1fr 80% 1fr',
+        backgroundColor: "#A8CF45",
+        alignContent: 'center'
+    },
+    iconsAndMore: {
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    input: {
+    },
+    sendAndAudio: {
+        display: 'flex',
+        justifyContent: 'center'
+    }
+}));
