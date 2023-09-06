@@ -17,7 +17,7 @@ import useStore from '../context/store';
 export default function Sidebar() {
     console.log('RENDER DE SIDEBAR')
     const classes = useStyles()
-    const { setMessages, conversations, setConversations, setCurrentConversation }: any = useStore() // Global states
+    const { setMessages, conversations, setConversations, setCurrentConversation, currentUser }: any = useStore() // Global states
     const [openMore, setOpenMore] = useState<null | HTMLElement>(null); // State menu 'more' del sidebar header.
 
     const { logOut, user } = UserAuth() // LogOut y usuario logeado.
@@ -75,11 +75,12 @@ export default function Sidebar() {
         });
     }
 
+    console.log('aca', currentUser)
 
     return (
         <Box className={classes.container}>
             <Box className={classes.sidebarHeader}>
-                <Avatar src={user?.photoURL} />
+                <Avatar src={currentUser?.avatar} />
                 <IconButton onClick={handleMenu}>
                     <MoreVertIcon />
                 </IconButton>
