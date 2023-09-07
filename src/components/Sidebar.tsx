@@ -16,6 +16,7 @@ import Chat from "./Chat";
 import useStore from "../context/store";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import LogoutIcon from "@mui/icons-material/Logout";
+import CustomDrawer from "../pages/CustomDrawer";
 
 export default function Sidebar() {
     console.log("RENDER DE SIDEBAR");
@@ -28,6 +29,7 @@ export default function Sidebar() {
         currentUser,
     }: any = useStore(); // Global states
     const [openMore, setOpenMore] = useState<null | HTMLElement>(null); // State menu 'more' del sidebar header.
+    const [openDrawer, setOpenDrawer] = useState(true); // State menu 'more' del sidebar header.
 
     const { logOut, user } = UserAuth(); // LogOut y usuario logeado.
 
@@ -85,10 +87,14 @@ export default function Sidebar() {
         });
     };
 
+    const toggleDrawer = () => {
+        setOpenDrawer(!openDrawer);
+    }
+
     return (
         <Box className={classes.container}>
             <Box className={classes.sidebarHeader}>
-                <Avatar src={currentUser?.avatar} />
+                <Avatar onClick={toggleDrawer} src={currentUser?.avatar} />
                 <IconButton onClick={handleMenu}>
                     <MoreVertIcon />
                 </IconButton>
@@ -134,6 +140,7 @@ export default function Sidebar() {
                     );
                 })}
             </Box>
+            <CustomDrawer className={classes.drawerContainer} openDrawer={openDrawer} toggleDrawer={toggleDrawer} />
         </Box>
     );
 }
@@ -160,4 +167,10 @@ const useStyles = makeStyles(() => ({
         padding: 8,
 
     },
+    drawerContainer: {
+        display: 'flex',
+        width: '100%',
+        // backgroundColor: "pink",
+        marginLeft: '8px'
+    }
 }));
