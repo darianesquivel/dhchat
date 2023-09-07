@@ -7,8 +7,6 @@ import Inputbar from './Inputbar';
 export default function Conversation() {
     const classes = useStyles()
     const { messages, currentConversation }: any = useStore()
-
-    console.log({ currentConversation })
     return (
         <Box className={classes.container}>
             <Box className={classes.headerConversation}>
@@ -51,6 +49,9 @@ const useStyles = makeStyles(() => ({
         display: 'grid',
         gridTemplateRows: '60px 1fr 60px',
         backgroundColor: 'white',
+    },
+    emptyContainer: {
+
     },
     headerConversation: {
         backgroundColor: '#A8CF45',

@@ -8,25 +8,14 @@ import { useEffect } from 'react';
 import { getDocs } from '@firebase/firestore';
 import { db } from '../api/Config/firebase';
 import { collection, } from '@firebase/firestore';
-
-
-const useStyles = makeStyles(() => ({
-    container: {
-        height: '100vh',
-        display: 'grid',
-        gridTemplateColumns: '25% 1fr',
-        backgroundColor: '#F1F1F1',
-        gap: 2,
-        padding: 8,
-    },
-}));
+import SelectChat from '../components/SelectChat';
 
 
 export default function NewHome() {
     console.log('RENDER DE NEW HOME')
     const classes = useStyles()
     const { user } = UserAuth()
-    const { setCurrentUser, setAllUsers }: any = useStore()
+    const { setCurrentUser, setAllUsers, currentConversation }: any = useStore()
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -54,14 +43,29 @@ export default function NewHome() {
         };
     }, [setAllUsers, setCurrentUser, user])
 
-
-
-
-
     return (
         <Box className={classes.container}>
             <Sidebar />
-            <Conversation />
+            {
+                currentConversation ?
+                    <Conversation /> :
+                    <SelectChat />
+
+            }
+
         </Box>
     )
 }
+
+
+const useStyles = makeStyles(() => ({
+    container: {
+        height: '100vh',
+        display: 'grid',
+        gridTemplateColumns: '25% 1fr',
+        backgroundColor: '#F1F1F1',
+        gap: 2,
+        padding: 8,
+    },
+}));
+

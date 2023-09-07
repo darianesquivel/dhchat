@@ -5,7 +5,7 @@ import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import AddIcon from '@mui/icons-material/Add';
 import MicIcon from '@mui/icons-material/Mic';
 import { useEffect, useState } from 'react';
-import { collection, serverTimestamp } from '@firebase/firestore';
+import { addDoc, collection, serverTimestamp } from '@firebase/firestore';
 import useStore from '../context/store';
 import { db } from '../api/Config/firebase';
 
@@ -51,13 +51,13 @@ export default function Inputbar() {
                 text: message,
             },
             sendAt: serverTimestamp(),
-            // sendBy: user?.uid,
-            // avatar: user?.photoURL,
-            // user: user?.displayName,
-            // type: messageType
+            sendBy: currentUser?.uid,
+            avatar: currentUser?.avatar,
+            user: currentUser?.displayName,
+            type: 'text'
         };
-        console.log({ messageData })
-        //   addDoc(messagesRef, messageData);
+        addDoc(conversationMessageRef, messageData);
+        setMessage('') // Despues de enviar el mensaje, borra el estado.
     };
 
 
@@ -89,7 +89,7 @@ export default function Inputbar() {
                     <MenuItem onClick={handleCloseMore}>Send photo</MenuItem>
                 </Menu>
             </Box>
-            <TextField size='small' className={classes.input} onChange={handleChange} />
+            <TextField size='small' value={message} className={classes.input} onChange={handleChange} />
             <Box className={classes.sendAndAudio}>
                 {message.length ?
                     <IconButton onClick={handleSubmitMessage}>
