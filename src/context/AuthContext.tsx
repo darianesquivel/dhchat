@@ -1,24 +1,24 @@
 import { useContext, createContext, useEffect, useState, ReactNode } from 'react';
 import { auth } from '../api/Config/firebase';
-import { onAuthStateChanged} from 'firebase/auth';
-import  {logOut, googleSignIn}  from '../api/functions/useFirebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { logOut, googleSignIn } from '../api/functions/useFirebase';
 
 interface User {
   email: string;
   displayName: string;
-  photoURL:string;
-  uid:string;
+  photoURL: string;
+  uid: string;
 }
 
-  interface AuthContextProps {
+interface AuthContextProps {
   googleSignIn: () => Promise<void>;
   logOut: () => Promise<void>;
   user: User | null;
 }
 
 const AuthContext = createContext<AuthContextProps>({
-  googleSignIn: async () => {},
-  logOut: async () => {},
+  googleSignIn: async () => { },
+  logOut: async () => { },
   user: null,
 });
 
@@ -27,18 +27,19 @@ interface AuthContextProviderProps {
 }
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
+
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
 
-    const unsubscribe = onAuthStateChanged(auth, (currentUser:any) => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser: any) => {
       setUser(currentUser);
     });
 
     return () => {
       unsubscribe();
     };
-    
+
   }, []);
 
   return (
@@ -49,5 +50,5 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 };
 
 export const UserAuth = () => {
-    return useContext(AuthContext)
+  return useContext(AuthContext)
 }

@@ -2,7 +2,6 @@ import { Avatar, Box, Chip, Skeleton, Typography } from "@mui/material";
 import moment from 'moment';
 import { UserAuth } from "../context/AuthContext";
 import { makeStyles } from "@mui/styles";
-
 interface MessageProps {
   content: {
     text: string;
@@ -35,94 +34,6 @@ interface MessageProps {
   translateMe?: boolean;
   type: string;
 }
-
-const useStyles = makeStyles((theme) => ({
-  container: {
-    display: 'flex',
-  },
-  containerLogUser: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    paddingRight: 10
-  },
-  avatar: {
-    position: 'relative',
-    top: '10px'
-  },
-  avatarMessage: {
-    display: 'flex',
-    gap: 20,
-  },
-  avatarMessageLoginUser: {
-    display: 'flex',
-    flexDirection: 'row-reverse',
-    gap: 20,
-
-  },
-  nameContentDate: {
-    background: "#EAEAEA",
-    display: "inline-block",
-    borderRadius: 12,
-    padding: '10px',
-    position: 'relative',
-  },
-  nameContentDateLogUser: {
-    background: "#a8cf45",
-    display: "inline-block",
-    borderRadius: 12,
-    padding: '10px',
-    marginTop: '10px',
-    marginLeft: 'auto',
-    position: 'relative',
-    textAlign: 'end'
-  },
-  name: {
-    fontSize: 14,
-    fontWeight: 600,
-  },
-  date: {
-    fontSize: 10,
-    textAlign: 'end',
-  },
-  bubbleDialog: {
-    position: 'absolute',
-    borderStyle: 'solid',
-    borderWidth: '10px 0 10px 10px',
-    borderColor: 'transparent transparent transparent #EAEAEA',
-    top: '10px',
-    left: '-8px',
-    right: 'auto',
-    transform: 'rotate(-40deg)'
-  },
-  bubbleDialogLogUser: {
-    position: 'absolute',
-    borderStyle: 'solid',
-    borderWidth: '10px 10px 10px 10px',
-    borderColor: 'transparent #a8cf45 transparent transparent',
-    top: '10px',
-    right: '-8px',
-    transform: 'rotate(40deg)'
-  },
-  image: {
-    maxWidth: '100%', maxHeight: '300px', objectFit: 'contain'
-  },
-  translateMessage: {
-    width: 'fit-content',
-    display: "inline-block",
-    borderRadius: 8,
-    padding: '2px 5px',
-    margin: 1,
-    background: "#F1F7E1",
-  },
-  chip: {
-    marginRight: 5
-  },
-  messagesContainer: {
-    display: 'flex',
-    flexDirection: 'column'
-  }
-}));
-
 export default function Message({
   content,
   avatar,
@@ -167,7 +78,7 @@ export default function Message({
           <Box className={user?.uid === userId ? classes.nameContentDateLogUser : classes.nameContentDate}>
             <Typography className={classes.name}> {user?.uid === userId ? null : `${name}`} </Typography>
             <MessageContent />
-            <Typography className={classes.date} >{formattedDate}</Typography>
+            <Typography variant="caption" className={classes.date} >{formattedDate}</Typography>
             <Box className={user?.uid === userId ? classes.bubbleDialogLogUser : classes.bubbleDialog} />
           </Box>
           {
@@ -183,3 +94,94 @@ export default function Message({
     </Box>
   );
 }
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+  },
+  containerLogUser: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    paddingRight: 10
+  },
+  avatar: {
+    position: 'relative',
+    top: '10px'
+  },
+  avatarMessage: {
+    display: 'flex',
+    gap: 20,
+  },
+  avatarMessageLoginUser: {
+    display: 'flex',
+    flexDirection: 'row-reverse',
+    gap: 20,
+
+  },
+  nameContentDate: {
+    background: "#EAEAEA",
+    display: "flex",
+    flexDirection: 'column',
+    borderTopRightRadius: 8,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    padding: '10px',
+    position: 'relative',
+  },
+  nameContentDateLogUser: {
+    background: "#a8cf45",
+    display: "flex",
+    flexDirection: 'column',
+    borderTopLeftRadius: 8,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    padding: '10px',
+    marginTop: '10px',
+    marginLeft: 'auto',
+    position: 'relative',
+    textAlign: 'end'
+  },
+  name: {
+
+  },
+  date: {
+    textAlign: 'end'
+  },
+  bubbleDialog: {
+    position: 'absolute',
+    borderStyle: 'solid',
+    borderWidth: '10px 10px 10px 10px',
+    borderColor: 'transparent transparent #EAEAEA transparent',
+    top: '-10px',
+    left: '-8px',
+    transform: 'rotate(45deg)'
+  },
+  bubbleDialogLogUser: {
+    position: 'absolute',
+    borderStyle: 'solid',
+    borderWidth: '10px 10px 10px 10px',
+    borderColor: 'transparent #a8cf45 transparent transparent',
+    top: '-10px',
+    right: '-8px',
+    transform: 'rotate(45deg)',
+  },
+  image: {
+    maxWidth: '100%', maxHeight: '300px', objectFit: 'contain'
+  },
+  translateMessage: {
+    width: 'fit-content',
+    display: "inline-block",
+    borderRadius: 8,
+    padding: '2px 5px',
+    margin: 1,
+    background: "#F1F7E1",
+  },
+  chip: {
+    marginRight: 5
+  },
+  messagesContainer: {
+    display: 'flex',
+    flexDirection: 'column'
+  }
+}));
+

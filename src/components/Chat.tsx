@@ -29,7 +29,7 @@ export default function Chat({
         alignItems: "center",
       }}
     >
-      <Avatar src={avatar} variant="rounded" />
+      <Avatar src={avatar} />
       <Box sx={{ flexGrow: 1, ml: 1 }}>
         <Typography variant="overline" fontWeight={800}>
           {name}
@@ -39,8 +39,8 @@ export default function Chat({
           <Typography variant="inherit">
             {" "}
             {lastMessageSendBy?.slice(0, lastMessageSendBy.indexOf(" "))} :{" "}
-            {lastMessage.length > 20
-              ? lastMessage.slice(0, 20) + "..."
+            {lastMessage.length > 40
+              ? lastMessage.slice(0, 40) + "..."
               : lastMessage}
           </Typography>
         ) : null}

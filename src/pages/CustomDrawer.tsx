@@ -1,45 +1,37 @@
-import * as React from 'react';
-
-import Box from '@mui/material/Box';
-
-
-
-import CssBaseline from '@mui/material/CssBaseline';
-import Home from './Home';
-import { TransitionProps } from '@mui/material/transitions';
-import { Dialog, Slide } from '@mui/material';
+import { Drawer } from '@mui/material';
 import Profile from './Profile';
+import { makeStyles } from "@mui/styles";
 
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
-export default function CustomDrawer() {
-
-  const [openProfile, setOpenProfie] = React.useState(false);
-
-  const handleCloseProfile = () => {
-    setOpenProfie(false);
-  };
+export default function CustomDrawer({ openDrawer, toggleDrawer }: any) {
+  const classes = useStyles()
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-      <Box component="main" sx={{ flexGrow: 1, p: 1, backgroundColor: "#f1f1f1" }}>
-        <Home />
-        <Dialog
-          open={openProfile}
-          TransitionComponent={Transition}
-        >
-          <Profile onClose={handleCloseProfile} />
-        </Dialog>
-      </Box>
-    </Box>
+    <Drawer
+      anchor={'left'}
+      open={openDrawer}
+      onClose={toggleDrawer}
+      BackdropProps={{
+        invisible: true, // Desactiva el fondo oscurecido
+      }}
+      className={classes.drawerContainer}
+      PaperProps={{
+        style: {
+          width: 'calc(25% - 4px)', // Ancho del Drawer con margen de 8px
+          height: 'calc(100vh - 10px)',
+          marginLeft: '8px', // Margen izquierdo de 8px
+          marginTop: '8px', // Margen izquierdo de 8px
+          boxShadow: 'none',
+        },
+      }}
+    >
+      <Profile onClose={toggleDrawer} />
+    </Drawer >
   );
 }
+
+const useStyles = makeStyles(() => ({
+  drawerContainer: {
+    position: 'relative',
+    width: "500px"
+  }
+}));
