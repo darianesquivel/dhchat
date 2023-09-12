@@ -19,7 +19,6 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import CustomDrawer from "../pages/CustomDrawer";
 
 export default function Sidebar() {
-    console.log("RENDER DE SIDEBAR");
     const classes = useStyles();
     const {
         setMessages,
@@ -29,7 +28,7 @@ export default function Sidebar() {
         currentUser,
     }: any = useStore(); // Global states
     const [openMore, setOpenMore] = useState<null | HTMLElement>(null); // State menu 'more' del sidebar header.
-    const [openDrawer, setOpenDrawer] = useState(true); // State menu 'more' del sidebar header.
+    const [openDrawer, setOpenDrawer] = useState(false); // State menu 'more' del sidebar header.
 
     const { logOut, user } = UserAuth(); // LogOut y usuario logeado.
 
@@ -67,7 +66,6 @@ export default function Sidebar() {
     };
 
     const handleClickConversation = (conversation: any) => {
-        console.log(conversation);
         const conversationMessagesRef = collection(
             db,
             "conversations",
@@ -94,7 +92,7 @@ export default function Sidebar() {
     return (
         <Box className={classes.container}>
             <Box className={classes.sidebarHeader}>
-                <Avatar onClick={toggleDrawer} src={currentUser?.avatar} />
+                <Avatar onClick={toggleDrawer} src={currentUser?.avatar} className={classes.avatar} />
                 <IconButton onClick={handleMenu}>
                     <MoreVertIcon />
                 </IconButton>
@@ -170,7 +168,9 @@ const useStyles = makeStyles(() => ({
     drawerContainer: {
         display: 'flex',
         width: '100%',
-        // backgroundColor: "pink",
         marginLeft: '8px'
+    },
+    avatar: {
+        cursor: 'pointer'
     }
 }));

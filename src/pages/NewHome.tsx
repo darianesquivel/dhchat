@@ -12,7 +12,6 @@ import SelectChat from '../components/SelectChat';
 
 
 export default function NewHome() {
-    console.log('RENDER DE NEW HOME')
     const classes = useStyles()
     const { user } = UserAuth()
     const { setCurrentUser, setAllUsers, currentConversation }: any = useStore()

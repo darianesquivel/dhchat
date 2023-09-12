@@ -3,8 +3,6 @@ import Profile from './Profile';
 import { makeStyles } from "@mui/styles";
 
 export default function CustomDrawer({ openDrawer, toggleDrawer }: any) {
-  console.log('===========>', openDrawer)
-
   const classes = useStyles()
 
   return (

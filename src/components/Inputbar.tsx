@@ -17,16 +17,25 @@ import useStore from "../context/store";
 import { db } from "../api/Config/firebase";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import Picker from "@emoji-mart/react";
+
 
 export default function Inputbar() {
     const classes = useStyles();
     const [message, setMessage] = useState("");
     const [openMore, setOpenMore] = useState<null | HTMLElement>(null); // Estado menu 'more' del input.
+    const [openEmoji, setOpenEmoji] = useState<null | HTMLElement>(null); // Estado emojis.
     const [conversationMessageRef, setConversationMessageRef]: any = useState(); // Guarda ref para enviar mensajes a la conversacion correcta
     const { currentConversation, currentUser }: any = useStore();
 
     const handleChange = (event: any) => {
-        setMessage(event.target.value);
+        // if para saber si es un emoji el que ejecuto el handleChange
+        if (event.native) {
+            setMessage(message + event.native);
+        } else {
+            // si no es emoji es un mensaje text
+            setMessage(event.target.value);
+        }
     };
 
     const handleMore = (event: React.MouseEvent<HTMLElement>) => {
@@ -35,6 +44,14 @@ export default function Inputbar() {
 
     const handleCloseMore = () => {
         setOpenMore(null); // Cierra el menu 'more'.
+    };
+
+    const handleEmoji = (event: React.MouseEvent<HTMLElement>) => {
+        setOpenEmoji(event.currentTarget); // Abre los emojis.
+    };
+
+    const handleCloseEmoji = () => {
+        setOpenEmoji(null); // Cierra los emojis.
     };
 
     useEffect(() => {
@@ -50,7 +67,6 @@ export default function Inputbar() {
         }
     }, [currentConversation]);
 
-    console.log({ currentUser });
 
     const handleSubmitMessage = () => {
         const messageData = {
@@ -70,9 +86,32 @@ export default function Inputbar() {
     return (
         <Box className={classes.container}>
             <Box className={classes.iconsAndMore}>
-                <IconButton>
+                <IconButton onClick={handleEmoji}>
                     <InsertEmoticonIcon />
                 </IconButton>
+                <Menu
+                    id="menu-emoji"
+                    anchorEl={openEmoji}
+                    anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                        vertical: "bottom",
+                        horizontal: "right",
+                    }}
+                    open={Boolean(openEmoji)}
+                    onClose={handleCloseEmoji}
+                >
+                    <Picker
+                        theme='light'
+                        emojiSize={24}
+                        emojiButtonSize={36}
+                        onEmojiSelect={handleChange}
+                        maxFrequentRows={0}
+                    />
+                </Menu>
                 <IconButton onClick={handleMore}>
                     <AddIcon />
                 </IconButton>
